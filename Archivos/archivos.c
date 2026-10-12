@@ -1,13 +1,18 @@
+#include <stdio.h>
+#include <stdlib.h>
+// aca incluir la biblio de tda vector dinamico generico
 
-
-void personalesCargarCSV(const char *path, tPersonales *transferencias, int capacidad)
+void cargarArchivoEnVector(const char *path, Vector *v, void (*accion) (const char * registro, void * elemento))
 {
     FILE *archivo;
     char linea[256];
-    tPersonales transferencia;
-    
-    int campos_leidos;
-  
+    void *elemento = malloc(v->tamElem);
+
+    if(!elemento)
+    {
+        puts("Hubo un error reinicie el programa");
+        return;
+    }
 
     archivo = fopen(path, "r");
     if (archivo == NULL)
@@ -22,27 +27,12 @@ void personalesCargarCSV(const char *path, tPersonales *transferencias, int capa
         if (linea[0] == '\n' || linea[0] == '\r' || linea[0] == '#')
             continue;
 
-        campos_leidos = sscanf(linea,
-            "%d;%d;%2[^;];%49[^;];%c;%f",
-            &transferencia.anio, 
-            &transferencia.trimestre, 
-            transferencia.codigo_pais, 
-            transferencia.descripcion_pais, 
-            &transferencia.tipo,
-            &transferencia.monto
-        );
+        accion(linea, elemento); //aca se guarda el registro en la estructura correspondiente
 
-        if(campos_leidos == 16 && strcmp(miembro.email_tutor, "") != 0)
-        {
-            tam_mail = strlen(miembro.email_tutor);
-            strncpy(miembro.email_tutor, "", tam_mail);
-        }
-
-        if (campos_leidos != 16 && campos_leidos != 17)
-            continue; /* linea mal formada, no se registra en auditoria */
-
-        miembro_validar(&miembro, proceso, indice_miembros, auditoria);
+        vectorInsertarAlFinal(v, elemento); //lo guardo en el vector
     }
+
+    free(elemento);
 
     fclose(archivo);
 }

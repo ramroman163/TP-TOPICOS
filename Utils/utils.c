@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "utils.h"
+#include "Tipos/tipos.h"
 
 int ingresarEntero(char *mensaje)
 {
@@ -60,4 +61,12 @@ void limpiar_buffer(void)
 {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
+}
+
+void armaTransfPersonales(const char *registro, void * elemento)
+{
+    tPersonales *transferencia = (tPersonales *)elemento;
+    
+    sscanf(registro,"%d;%d;%2[^;];%49[^;];%c;%f", &transferencia->anio, &transferencia->trimestre, 
+            transferencia->codigo_pais, transferencia->descripcion_pais, &transferencia->tipo, &transferencia->monto);
 }

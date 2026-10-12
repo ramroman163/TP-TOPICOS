@@ -7,5 +7,6 @@ int ingresarEnteroPositivo(char *mensaje);
 float ingresarFloat(char *mensaje);
 float ingresarFloatPositivo(char *mensaje);
 void limpiar_buffer(void);
+void armaTransfPersonales(const char *registro, void * elemento);
 
 #endif // UTILS_H_INCLUDED

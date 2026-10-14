@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-// aca incluir la biblio de tda vector dinamico generico
+#include "../TDAVector/Vector.h"
 
 void cargarArchivoEnVector(const char *path, Vector *v, void (*accion) (const char * registro, void * elemento))
 {

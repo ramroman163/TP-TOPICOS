@@ -4,7 +4,7 @@
 #include "../Tipos/tipos.h"
 #include "../Archivos/archivos.h"
 #include "../Utils/utils.h"
-// aca incluir la biblio de tda vector dinamico generico
+#include "../TDAVector/Vector.h"
 
 #define PATH_TRANSFERENCIAS_CSV "transferencias_personales_clean.csv" //si el archivo esta subido en otra carpeta indicar la ruta completa
 

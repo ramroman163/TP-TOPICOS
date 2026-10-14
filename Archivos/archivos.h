@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-//AGREGAR TDA VECTOR
+#include "../TDAVector/Vector.h"
 
 void cargarArchivoEnVector(const char *path, Vector *v, void (*accion) (const char * registro, void * elemento));
 void exportar_vec_a_txt_var(const char *path, const Vector *v, void (*accion) (const Vector *v, FILE *p));

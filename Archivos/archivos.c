@@ -36,3 +36,33 @@ void cargarArchivoEnVector(const char *path, Vector *v, void (*accion) (const ch
 
     fclose(archivo);
 }
+
+void exportar_vec_a_binario(const char *path, const Vector *v)
+{
+    FILE *pbin = fopen(path, "wb");
+
+    if (!pbin)
+    {
+        puts("Hubo un error reinicie el programa");
+        return;
+    }
+
+    fwrite(v->vec, v->tamElem, v->ce, pbin);
+
+    fclose(pbin);
+}
+
+void exportar_vec_a_txt_var(const char *path, const Vector *v, void (*accion) (const Vector *v, FILE *p))
+{
+    FILE *ptxt = fopen(path, "wt");
+
+    if (!ptxt)
+    {
+        puts("Hubo un error reinicie el programa");
+        return;
+    }
+
+    accion(v, ptxt);
+
+    fclose(ptxt);
+}

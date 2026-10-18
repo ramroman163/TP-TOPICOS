@@ -1,0 +1,52 @@
+# depslib dependency file v1.0
+1792344626 source:c:\users\roman\desktop\facultad\tópicos de programación\trabajo practico\transfpersonales\main.c
+	<stdio.h>
+	<stdlib.h>
+	"../Menu/menu.h"
+	"../Tipos/tipos.h"
+	"../Archivos/archivos.h"
+	"../Utils/utils.h"
+	"../TDAVector/Vector.h"
+
+1791055989 c:\users\roman\desktop\facultad\tópicos de programación\trabajo practico\menu\menu.h
+	"../Tipos/tipos.h"
+
+1791055591 c:\users\roman\desktop\facultad\tópicos de programación\trabajo practico\tipos\tipos.h
+
+1792175487 c:\users\roman\desktop\facultad\tópicos de programación\trabajo practico\archivos\archivos.h
+	<stdio.h>
+	<stdlib.h>
+	"../TDAVector/Vector.h"
+
+1792339098 c:\users\roman\desktop\facultad\tópicos de programación\trabajo practico\tdavector\vector.h
+	<stddef.h>
+	<stdbool.h>
+
+1791942862 c:\users\roman\desktop\facultad\tópicos de programación\trabajo practico\utils\utils.h
+
+1792175487 source:c:\users\roman\desktop\facultad\tópicos de programación\trabajo practico\archivos\archivos.c
+	<stdio.h>
+	<stdlib.h>
+	"../TDAVector/Vector.h"
+
+1791056536 source:c:\users\roman\desktop\facultad\tópicos de programación\trabajo practico\calculoscontables\calculoscontables.c
+
+1792339142 source:c:\users\roman\desktop\facultad\tópicos de programación\trabajo practico\menu\menu.c
+	<stdio.h>
+	"menu.h"
+	"../Utils/utils.h"
+	"../CalculosContables/calculosContables.h"
+
+1791056704 c:\users\roman\desktop\facultad\tópicos de programación\trabajo practico\calculoscontables\calculoscontables.h
+
+1792338461 source:c:\users\roman\desktop\facultad\tópicos de programación\trabajo practico\utils\utils.c
+	<stdio.h>
+	"utils.h"
+	"../Tipos/tipos.h"
+
+1792338787 source:c:\users\roman\desktop\facultad\tópicos de programación\trabajo practico\tdavector\vector.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"Vector.h"
+

@@ -39,12 +39,12 @@ int vectorOrdInsertar(Vector* v, const void* elem, Cmp cmp); // realloc
 int vectorOrdInsertarCDup(Vector* v, const void* elem, Cmp cmp); // realloc
 int vectorInsertarAlFinal(Vector* v, const void* elem); // realloc
 int vectorInsertarEnPos(Vector* v, const void* elem, int pos); // realloc
-int vectorOrdBuscar(const Vector* v, void* elem, Cmp cmp);
+int vectorOrdBuscar(const Vector* v, const void* elem, Cmp cmp);
 int vectorOrdBuscarRecursiva(const Vector* v, void* elem, Cmp cmp);
-int vectorDesordBuscar(const Vector* v, void* elem, Cmp cmp);
+int vectorDesordBuscar(const Vector* v, const void* elem, Cmp cmp);
 size_t vectorCE(const Vector* v);
-bool vectorOrdEliminar(Vector* v, void* elem); // realloc
-bool vectorDesordEliminar(Vector* v, void* elem); // realloc
+bool vectorOrdEliminar(Vector* v, const void* elem, Cmp cmp); // realloc
+bool vectorDesordEliminar(Vector* v, const void* elem, Cmp cmp); // realloc
 bool vectorEliminarDePos(Vector* v, int pos); // realloc
 void vectorOrdenar(Vector* v, int metodo, Cmp cmp);
 void vectorMostrar(const Vector* v, Print print);

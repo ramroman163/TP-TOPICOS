@@ -14,9 +14,9 @@ int main()
 
     vectorCrear(&transferenciasPersonales, sizeof(tPersonales));
 
-    cargarArchivoEnVector(PATH_TRANSFERENCIAS_CSV, &transferenciasPersonales, armaTransfPersonales);
-    
-    mostrarOpciones();
+    //cargarArchivoEnVector(PATH_TRANSFERENCIAS_CSV, &transferenciasPersonales, armaTransfPersonales);
+
+    menuEjecutar();
 
     vectorDestruir(&transferenciasPersonales);
 

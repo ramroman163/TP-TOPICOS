@@ -44,23 +44,23 @@ void menuEjecutar()
         switch (opcion)
         {
             case 1:
-                totalesPorPais(); break;
+                //totalesPorPais(); break;
             case 2:
-                totalesPorContinente(); break;
+                //totalesPorContinente(); break;
             case 3:
-                saldoTrimestralPorPais(); break;
+                //saldoTrimestralPorPais(); break;
             case 4:
-                totalesAnualesVariacion(); break;
+                //totalesAnualesVariacion(); break;
             case 5:
-                rankingPaises(); break;
+                //rankingPaises(); break;
             case 6:
-                participacionPorContinente(); break;
+                //participacionPorContinente(); break;
             case 7:
-                generarArchivoIntermedio(); break;
+                //generarArchivoIntermedio(); break;
             case 8:
-                promedioTrimestralPorPais(); break;
+                //promedioTrimestralPorPais(); break;
             case 9:
-                promedioTrimestralPorContinente(); break;
+                //promedioTrimestralPorContinente(); break;
             case 10:
                 printf("Hasta luego.\n"); break;
             default:

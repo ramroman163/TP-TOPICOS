@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include "menu.h"
 #include "../Utils/utils.h"
 #include "../CalculosContables/calculosContables.h"
@@ -32,7 +33,7 @@ void mostrarOpciones()
     printf("10. Salir\n");
 }
 
-void menuEjecutar()
+void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const Vector *transferencias)
 {
     int opcion;
 
@@ -46,7 +47,12 @@ void menuEjecutar()
             case 1:
                 totalesPorPais(); break;
             case 2:
-                totalesPorContinente(); break;
+                bool existe = verificarExistenciaArchivoIntermedio(pathIntermedio);
+
+                if(existe == false)
+                    generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias);
+
+                totalesPorContinente(pathIntermedio); break;
             case 3:
                 saldoTrimestralPorPais(); break;
             case 4:
@@ -56,7 +62,7 @@ void menuEjecutar()
             case 6:
                 participacionPorContinente(); break;
             case 7:
-                generarArchivoIntermedio(); break;
+                generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias); break;
             case 8:
                 promedioTrimestralPorPais(); break;
             case 9:

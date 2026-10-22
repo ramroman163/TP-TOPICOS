@@ -7,10 +7,33 @@ typedef struct
     int trimestre;
     char codigo_pais[3];
     char descripcion_pais[50];
-    char tipo;
+    char operacion;
     float monto;
     
 }tPersonales;
+
+typedef struct{
+    char codigo_pais[3];
+    char descripcion_pais[50];
+    char continente[20];
+}tContinentes;
+
+typedef struct{
+    char continente[20];
+    int registros;
+    float total_credito;
+    float total_debito;
+}tClasificacion;
+
+typedef struct{
+    int anio;
+    int trimestre;
+    char codigo_pais[3];
+    char descripcion_pais[50];
+    char continente[20];
+    char operacion;
+    float monto;
+}tIntermedio;
 
 
 #endif // TIPOS_H_INCLUDED

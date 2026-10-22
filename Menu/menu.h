@@ -4,6 +4,6 @@
 #include "../Tipos/tipos.h"
 
 void mostrarOpciones();
-void menuEjecutar();
+void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const Vector *transferencias);
 
 #endif // MENU_H_INCLUDED

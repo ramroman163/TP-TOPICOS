@@ -68,5 +68,52 @@ void armaTransfPersonales(const char *registro, void * elemento)
     tPersonales *transferencia = (tPersonales *)elemento;
     
     sscanf(registro,"%d;%d;%2[^;];%49[^;];%c;%f", &transferencia->anio, &transferencia->trimestre, 
-            transferencia->codigo_pais, transferencia->descripcion_pais, &transferencia->tipo, &transferencia->monto);
+            transferencia->codigo_pais, transferencia->descripcion_pais, &transferencia->operacion, &transferencia->monto);
+}
+
+void armaIntermedio(const char *registro, void * elemento)
+{
+    tIntermedio *inter = (tIntermedio *)elemento;
+
+    sscanf(registro,"%d;%d;%2[^;];%49[^;];%19[^;];%c;%f", &inter->anio, &inter->trimestre,
+            inter->codigo_pais, inter->descripcion_pais, inter->continente, &inter->operacion, &inter->monto);
+}
+
+void armaContinentes(const char *registro, void * elemento)
+{
+    tContinentes *continente = (tContinentes *)elemento;
+
+    sscanf(registro,"%2[^;];%49[^;];%19[^\r\n;]", continente->codigo_pais, continente->descripcion_pais,
+           continente->continente);
+}
+
+int compararCodigoPais(const void *a, const void *b)
+{
+    const tPersonales *transferencia = (const tPersonales*)a;
+    const tContinentes *continente = (const tContinentes*)b;
+
+    return strcmpi(transferencia->codigo_pais, continente->codigo_pais);
+}
+
+int compararContinente(const void *a, const void *b)
+{
+    const tIntermedio *inter = (const tIntermedio*)a;
+    const tClasificacion *clasif = (const tClasificacion*)b;
+
+    return strcmpi(inter->continente, clasif->continente);
+}
+
+int compararCreditoDesc(const void *a, const void *b)
+{
+    const tClasificacion *clasif_a = (const tClasificacion*)a;
+    const tClasificacion *clasif_b = (const tClasificacion*)b;
+
+    return clasif_b->total_credito - clasif_a->total_credito;
+}
+
+void printClasificacion(const void *e)
+{
+    const tClasificacion* clasif = (tClasificacion*)e;
+    printf("%s - %d - %.2f - %.2f\n", clasif->continente, clasif->registros, clasif->total_credito,
+           clasif->total_debito);
 }

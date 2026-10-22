@@ -21,12 +21,10 @@ void cargarArchivoEnVector(const char *path, Vector *v, void (*accion) (const ch
         return;
     }
 
+    fgets(linea, sizeof(linea), archivo);
+
     while (fgets(linea, sizeof(linea), archivo) != NULL)
     {
-        /* saltar linea de encabezado o lineas vacias */
-        if (linea[0] == '\n' || linea[0] == '\r' || linea[0] == '#')
-            continue;
-
         accion(linea, elemento); //aca se guarda el registro en la estructura correspondiente
 
         vectorInsertarAlFinal(v, elemento); //lo guardo en el vector

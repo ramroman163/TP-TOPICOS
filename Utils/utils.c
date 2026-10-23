@@ -117,3 +117,30 @@ void printClasificacion(const void *e)
     printf("%s - %d - %.2f - %.2f\n", clasif->continente, clasif->registros, clasif->total_credito,
            clasif->total_debito);
 }
+
+int compararTransferenciasChar(const void* a, const void* b)
+{
+    const tPersonales* op1 = (const tPersonales*)a;
+    const tPersonales* op2 = (const tPersonales*)b;
+
+    return strcmpi(op1->codigo_pais, op2->codigo_pais);
+}
+
+int compararOperacionesFloat(const void* a, const void* b)
+{
+    const tTotalOperaciones* op1 = (const tTotalOperaciones*)a;
+    const tTotalOperaciones* op2 = (const tTotalOperaciones*)b;
+
+    if (op2->totalCreditos > op1->totalCreditos)
+        return 1;
+    if (op2->totalCreditos < op1->totalCreditos)
+        return -1;
+    
+    return 0;
+}
+void printResumen(const void *e)
+{
+    const tTotalOperaciones* resumen = (tTotalOperaciones*)e;
+    printf("%-10s - %-30s - %-10d - %15.2f - %15.2f\n", resumen->codigoPais, resumen->descripcionPais, 
+        resumen->cantidadRegistros, resumen->totalCreditos, resumen->totalDebitos);
+}

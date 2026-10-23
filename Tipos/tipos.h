@@ -35,5 +35,12 @@ typedef struct{
     float monto;
 }tIntermedio;
 
+typedef struct{
+    char codigoPais[3];
+    char descripcionPais[50];
+    int cantidadRegistros;
+    float totalCreditos;
+    float totalDebitos;
+}tTotalOperaciones;
 
 #endif // TIPOS_H_INCLUDED

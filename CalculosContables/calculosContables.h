@@ -13,5 +13,9 @@ void generarArchivoIntermedio(const char *path_intermedio, const char *path_cont
 void promedioTrimestralPorPais();
 void promedioTrimestralPorContinente();
 bool verificarExistenciaArchivoIntermedio(const char *path_intermedio);
-        
+void ordenarTransferenciasxCod(Vector* transferencias);
+void ordenarTransferenciasxCredito(Vector* transferencias);
+void contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResumen);
+void mostrarVectorTransfResumen(const Vector* v, Print printResumen);
+
 #endif // CALCULOSCONTABLES_H_INCLUDED

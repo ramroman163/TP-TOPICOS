@@ -270,7 +270,8 @@ void calcularSaldosTrimestrales(const Vector* vAnio)
         do
         {
             i++;
-        } } while(i < ult && compararPaisNombre(pais, i) == 0);
+        }
+        while(i < ult && compararPaisNombre(pais, i) == 0);
     }
 
     //Una fila por pais y 4 columnas
@@ -313,7 +314,8 @@ void calcularSaldosTrimestrales(const Vector* vAnio)
                 }
             }
             i++;
-        } } while(i < ult && compararPaisNombre(pais, i) == 0);
+        }
+        while(i < ult && compararPaisNombre(pais, i) == 0);
 
         fprintf(arch, "%-30s", pais->descripcion_pais);
         for(j = 0; j < 4; j++)

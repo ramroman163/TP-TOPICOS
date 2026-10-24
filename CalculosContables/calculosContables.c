@@ -163,7 +163,7 @@ void contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResume
 
     while(i <= ult)
     {
-        int contRegistros = 0; 
+        int contRegistros = 0;
         float acumCreditos = 0, acumDebitos = 0;
         char codPaisActual[3];
         char descPaisActual[50];
@@ -192,7 +192,7 @@ void contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResume
         opResumen.totalDebitos = acumDebitos;
 
         //guarda en pos 0 e incrementa ce en uno, una vez que encuentra otro país, cargo todo en la prox pos
-  
+
         vectorInsertarEnPos(vTransfResumen, &opResumen, vTransfResumen->ce);
     }
 
@@ -215,16 +215,143 @@ void totalesPorPais(const char* path_transferencias, const Vector *vTransferenci
 
     //hago corte de control
     contaryCargarOperaciones(vTransferencias, &vResumen);
-    
+
     ordenarTransferenciasxCredito(&vResumen);
 
     mostrarVectorTransfResumen(&vResumen, printResumen);
 }
 
+//punto 3
 
+//Filtro las transferencias del año ingresado
+int filtrarTransferenciasAnio(const Vector* transferencias, Vector* vAnio, int anio)
+{
+    const tPersonales* i = (const tPersonales*) transferencias->vec;
+    size_t j;
 
+    for(j = 0; j < transferencias->ce; j++)
+    {
+        if((i + j)->anio == anio)
+        {
+            if(vectorInsertarAlFinal(vAnio, i + j) != TODO_OK)
+                return 0;
+        }
+    }
+    return 1;
+}
 
+int compararPaisNombre(const void* a, const void* b)
+{
+    const tPersonales* p1 = (const tPersonales*) a;
+    const tPersonales* p2 = (const tPersonales*) b;
+    int cmp = strcmp(p1->descripcion_pais, p2->descripcion_pais);
 
+    if(cmp != 0)
+        return cmp;
+    return strcmp(p1->codigo_pais, p2->codigo_pais);
+}
 
+void calcularSaldosTrimestrales(const Vector* vAnio)
+{
+    const tPersonales *i, *ult, *pais;
+    size_t cantPaises = 0, fila = 0, j, k;
+    int trimestre;
+    float (*saldos)[4];
+    FILE* arch;
 
+    i = (const tPersonales*) vAnio->vec;
+    ult = i + vAnio->ce;
 
+    while(i < ult)
+    {
+        pais = i;
+        cantPaises++;
+
+        do
+        {
+            i++;
+        } } while(i < ult && compararPaisNombre(pais, i) == 0);
+    }
+
+    //Una fila por pais y 4 columnas
+    saldos = malloc(cantPaises * sizeof(*saldos));
+    if(saldos == NULL)
+    {
+        printf("Error al reservar memoria.\n");
+        return;
+    }
+    for(k = 0; k < cantPaises; k++)
+        for(j = 0; j < 4; j++)
+            *(*(saldos + k) + j) = 0;
+
+    //Creo el archivo de texto
+    arch = fopen("saldo_trimestral.txt", "wt");
+    if(arch == NULL)
+    {
+        printf("Error al crear el archivo.\n");
+        free(saldos);
+        return;
+    }
+    fprintf(arch, "%-30s %12s %12s %12s %12s\n", "PAIS", "T1", "T2", "T3", "T4");
+    i = (const tPersonales*) vAnio->vec;
+
+    //Calculo los saldos de cada pais
+    while(i < ult)
+    {
+        pais = i;
+        do
+        {
+            trimestre = i->trimestre - 1;
+            if(trimestre >= 0 && trimestre < 4)
+            {
+                if(i->operacion == 'C')
+                    *(*(saldos + fila) + trimestre) += i->monto;
+                else
+                {
+                    if(i->operacion == 'D')
+                        *(*(saldos + fila) + trimestre) -= i->monto;
+                }
+            }
+            i++;
+        } } while(i < ult && compararPaisNombre(pais, i) == 0);
+
+        fprintf(arch, "%-30s", pais->descripcion_pais);
+        for(j = 0; j < 4; j++)
+            fprintf(arch, " %12.2f", *(*(saldos + fila) + j));
+        fprintf(arch, "\n");
+
+        fila++;
+    }
+
+    // Cierro el archivo y libero la memoria
+    fclose(arch);
+    free(saldos);
+    printf("Archivo generado: saldo_trimestral.txt\n");
+}
+
+void saldoTrimestralPorPais(const Vector* transferencias)
+{
+    int anio;
+    Vector vAnio;
+
+    anio = ingresarEnteroRango(2015, 2026, "Ingrese el anio: ");
+
+    if(!vectorCrear(&vAnio, sizeof(tPersonales)))
+        return;
+
+    if(!filtrarTransferenciasAnio(transferencias, &vAnio, anio))
+    {
+        printf("Error al guardar las transferencias.\n");
+        vectorDestruir(&vAnio);
+        return;
+    }
+
+    if(vAnio.ce == 0)
+        printf("No hay registros para ese anio.\n");
+    else
+    {
+        vectorOrdenar(&vAnio, FUSION, compararPaisNombre);
+        calcularSaldosTrimestrales(&vAnio);
+    }
+    vectorDestruir(&vAnio);
+}

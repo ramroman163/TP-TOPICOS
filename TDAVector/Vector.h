@@ -46,6 +46,6 @@ void vectorMostrar(const Vector* v, Print print);
 void* vectorGetElementoDePos(const Vector *v, int pos);
 void vectorVaciar(Vector* v); // realloc
 void vectorDestruir(Vector* v); // free
-
+void vectorCopiar(Vector* dest, const Vector* orig);
 
 #endif // VECTOR_H_INCLUDED

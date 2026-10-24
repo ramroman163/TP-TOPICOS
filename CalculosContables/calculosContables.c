@@ -160,9 +160,12 @@ void contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResume
     if(vTransfercias->ce == 0)
         return;
 
-    tPersonales* i = (tPersonales*) vTransfercias->vec;
-    tPersonales* ult = (tPersonales*) vTransfercias->vec + (vTransfercias->ce - 1);
+    // tPersonales* i = (tPersonales*) vTransfercias->vec;//lo mismo
+    //tPersonales* ult = (tPersonales*) vTransfercias->vec + (vTransfercias->ce - 1);
 
+    int cantidadElem = (int)vectorCE(vTransfercias);
+    tPersonales* i = vectorGetElementoDePos(vTransfercias, 0);
+    tPersonales* ult = vectorGetElementoDePos(vTransfercias, cantidadElem-1);
     tTotalOperaciones opResumen;
 
     while(i <= ult)
@@ -190,14 +193,17 @@ void contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResume
         } while(i<=ult && strcmpi(codPaisActual, i->codigo_pais) == 0);
 
         strcpy(opResumen.codigoPais, codPaisActual);
-        strcpy(opResumen.descripcionPais, descPaisActual); //(i-1)->descripcion_pais
+        strcpy(opResumen.descripcionPais, descPaisActual); 
         opResumen.cantidadRegistros = contRegistros;
         opResumen.totalCreditos = acumCreditos;
         opResumen.totalDebitos = acumDebitos;
 
         //guarda en pos 0 e incrementa ce en uno, una vez que encuentra otro país, cargo todo en la prox pos
+  
+        int codRet = vectorInsertarEnPos(vTransfResumen, &opResumen, vTransfResumen->ce);
 
-        vectorInsertarEnPos(vTransfResumen, &opResumen, vTransfResumen->ce);
+        if(codRet != TODO_OK)
+            return codRet;
     }
 
 }
@@ -205,24 +211,31 @@ void contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResume
 void mostrarVectorTransfResumen(const Vector* v, Print printResumen)
 {
     printf("\n");
-    printf("%-10s %-30s %-10s %-15s %-15s\n", "PAIS_COD", "PAIS_DESC", "registros", "total_credito", "total_debito");
+    printf("%-10s  %-30s  %-10s  %-15s  %-15s\n", "PAIS_COD", "PAIS_DESC", "registros", "total_credito", "total_debito");
     vectorMostrar(v, printResumen);
 }
 
 void totalesPorPais(const char* path_transferencias, const Vector *vTransferencias)
 {
-    ordenarTransferenciasxCod(vTransferencias);
+    Vector copiaTransferencias; //para no reordenar el vector principal
+
+    vectorCopiar(&copiaTransferencias, vTransferencias);
+
+    ordenarTransferenciasxCod(&copiaTransferencias);
 
     Vector vResumen; //para  guardar la nueva estructura en un vector
 
     vectorCrear(&vResumen, sizeof(tTotalOperaciones));
 
     //hago corte de control
-    contaryCargarOperaciones(vTransferencias, &vResumen);
+    contaryCargarOperaciones(&copiaTransferencias, &vResumen);
 
     ordenarTransferenciasxCredito(&vResumen);
 
     mostrarVectorTransfResumen(&vResumen, printResumen);
+
+    vectorDestruir(&copiaTransferencias);
+    vectorDestruir(&vResumen);
 }
 
 //punto 3

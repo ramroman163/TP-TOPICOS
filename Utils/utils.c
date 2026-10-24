@@ -221,6 +221,6 @@ int compararOperacionesFloat(const void* a, const void* b)
 void printResumen(const void *e)
 {
     const tTotalOperaciones* resumen = (tTotalOperaciones*)e;
-    printf("%-10s - %-30s - %-10d - %15.2f - %15.2f\n", resumen->codigoPais, resumen->descripcionPais, 
+    printf("%-10s  %-30s  %-10d  %15.2f  %15.2f\n", resumen->codigoPais, resumen->descripcionPais, 
         resumen->cantidadRegistros, resumen->totalCreditos, resumen->totalDebitos);
 }

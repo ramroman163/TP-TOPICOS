@@ -114,7 +114,7 @@ int compararCreditoDesc(const void *a, const void *b)
 void printClasificacion(const void *e)
 {
     const tClasificacion* clasif = (tClasificacion*)e;
-    printf("%s - %d - %.2f - %.2f\n", clasif->continente, clasif->registros, clasif->total_credito,
+    printf("%s - %d - %.2lf - %.2lf\n", clasif->continente, clasif->registros, clasif->total_credito,
            clasif->total_debito);
 }
 

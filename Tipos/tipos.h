@@ -21,8 +21,8 @@ typedef struct{
 typedef struct{
     char continente[20];
     int registros;
-    float total_credito;
-    float total_debito;
+    double total_credito;
+    double total_debito;
 }tClasificacion;
 
 typedef struct{

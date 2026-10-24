@@ -104,6 +104,14 @@ int compararContinente(const void *a, const void *b)
     return strcmpi(inter->continente, clasif->continente);
 }
 
+int compararPaisIntermedio(const void *a, const void *b)
+{
+    const tIntermedio *interA = (const tIntermedio*)a;
+    const tIntermedio *interB = (const tIntermedio*)b;
+
+    return strcmp(interA->codigo_pais, interB->codigo_pais);
+}
+
 int compararCreditoDesc(const void *a, const void *b)
 {
     const tClasificacion *clasif_a = (const tClasificacion*)a;
@@ -112,11 +120,43 @@ int compararCreditoDesc(const void *a, const void *b)
     return clasif_b->total_credito - clasif_a->total_credito;
 }
 
+float compararPromTrim(const void* a, const void* b)
+{
+    const tResulProm* resul_a = (const tResulProm*)a;
+    const tResulProm* resul_b = (const tResulProm*)b;
+
+    return resul_a->prom - resul_b->prom;
+}
+
 void printClasificacion(const void *e)
 {
     const tClasificacion* clasif = (tClasificacion*)e;
     printf("%s - %d - %.2lf - %.2lf\n", clasif->continente, clasif->registros, clasif->total_credito,
            clasif->total_debito);
+}
+
+void printResulTrim(const void *e)
+{
+    const tResulProm* promTrim = (tResulProm*)e;
+    printf("%3s - %51s - %c - %d - %0.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, promTrim->operacion, promTrim->cantTrim, promTrim->prom);
+}
+
+int compararContinenteAnio(const void* a, const void* b)
+{
+    const tIntermedio* interA = (const tIntermedio*)a;
+    const tIntermedio* interB = (const tIntermedio*)b;
+
+    if(interA->anio > interB->anio)
+    {
+        return 1;
+    }
+
+    if(interA->anio < interB->anio)
+    {
+        return -1;
+    }
+    
+    return strcmp(interA->codigo_pais, interB->codigo_pais);
 }
 
 

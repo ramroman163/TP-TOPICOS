@@ -66,6 +66,13 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
             case 7:
                 generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias); break;
             case 8:
+
+                bool existe = verificarExistenciaArchivoIntermedio(path_intermedio);
+
+                if(!existe)
+                {
+                    generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias);
+                }
                 promedioTrimestralPorPais(); break;
             case 9:
                 promedioTrimestralPorContinente(); break;

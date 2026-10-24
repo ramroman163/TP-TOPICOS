@@ -1,4 +1,4 @@
-#ifndef TIPOS_H_INCLUDED
+    #ifndef TIPOS_H_INCLUDED
 #define TIPOS_H_INCLUDED
 
 typedef struct
@@ -34,6 +34,22 @@ typedef struct{
     char operacion;
     float monto;
 }tIntermedio;
+
+typedef struct{
+    char codigo_pais[3];
+    char descripcion_pais[50];
+    char operacion;
+    int cantTrim;
+    float prom;
+}tResulProm;
+
+typedef struct{
+    int anio;
+    char continente[20];
+    char operacion;
+    float promTrimDeb;
+    float promTrimCred;
+}tResulPromCont;
 
 typedef struct
 {

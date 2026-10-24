@@ -408,8 +408,7 @@ void rankingPaises(const Vector *transferencias)
 
     for (i=0; i< transferencias->ce; i++) //Acumulo registros por pais
     {
-        const tPersonales *t = ((const tPersonales *)(transferencias->vec)) + i;
-
+        const tPersonales *t = vectorGetElementoDePos(transferencias, i);
 
         int pos = vectorDesordBuscar(&paises, t, compararCodigoPaisTotales);
 
@@ -425,7 +424,7 @@ void rankingPaises(const Vector *transferencias)
         }
             else
             {
-                tPaisTotales *paisExistente = ((tPaisTotales *)(paises.vec)) + pos;
+                tPaisTotales *paisExistente = vectorGetElementoDePos(&paises, pos);
                 paisExistente->registros++;
 
                 if (t->operacion == 'C')
@@ -461,7 +460,7 @@ void rankingPaises(const Vector *transferencias)
 
         for(i=0; i < (size_t)n; i++)
         {
-            const tPaisTotales *pais = ((const tPaisTotales *)(paises.vec)) + i;
+            const tPaisTotales *pais = vectorGetElementoDePos(&paises, i);
 
         printf("%-10s | %-25s | %10d | %15.2f | %15.2f\n", pais->codigo_pais, pais->descripcion_pais, pais->registros, pais->total_credito, pais->total_debito);
     }

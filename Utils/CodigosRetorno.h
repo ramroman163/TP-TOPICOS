@@ -6,5 +6,6 @@
 #define DUPLICADO 2
 #define POS_INV 3
 #define SIN_MEM 4
+#define SIN_DATOS 5
 
 #endif CODIGOS_RETORNO_H

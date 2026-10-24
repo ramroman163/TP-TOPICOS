@@ -621,12 +621,118 @@ int promedioTrimestralPorContinente(const char *path_intermedio)
 
     if(!vectorCrear(&miVecResul, sizeof(tResulPromCont)))
     {
+        vectorDestruir(&miVecInter);
         return SIN_MEM;
     }
 
     cargarArchivoEnVector(path_intermedio, &miVecInter, armaIntermedio);
 
+    if(vectorCE(&miVecInter) == 0)
+    {
+        vectorDestruir(&miVecInter);
+        vectorDestruir(&miVecResul);
+        return SIN_DATOS;
+    }
+
     vectorOrdenar(&miVecInter, FUSION, compararContinenteAnio);
+
+    int contTrimDeb = 0;
+    int contTrimCred = 0;
+    float acumTrimDeb = 0.0;
+    float acumTrimCred = 0.0;
+    int codRet;
+
+    tIntermedio miObjAct;
+    tResulPromCont miObjResul;
+    char continenteAct[20];
+    int anioAct;
+
+    tIntermedio* i =  (tIntermedio*)vectorGetElementoDePos(&miVecInter, 0);
+    tIntermedio* ult = (tIntermedio*)vectorGetElementoDePos(&miVecInter, (int)vectorCE(&miVecInter) - 1);
+
+    miObjAct = *i;
+
+    while(i <= ult)
+    {
+        anioAct = miObjAct.anio; // info de comparacion
+
+        while(i <= ult && anioAct == miObjAct.anio)
+        {
+            strcpy(continenteAct, miObjAct.continente); // info de comparacion
+
+            contTrimDeb = 0;
+            contTrimCred = 0;
+            acumTrimDeb = 0.0;
+            acumTrimCred = 0.0;
+
+            while(i <= ult && strcmp(continenteAct, miObjAct.continente) == 0 && anioAct == miObjAct.anio)
+            {
+                if(miObjAct.monto > 0)
+                {
+                    if(miObjAct.operacion == 'C')
+                    {
+                        contTrimCred++;
+                        acumTrimCred += miObjAct.monto;
+                    }
+                    else
+                    {
+                        contTrimDeb++;
+                        acumTrimDeb += miObjAct.monto;
+                    }
+                }
+
+                i++;
+
+                if(i <= ult)
+                {
+                    miObjAct = *i;
+                }
+            }
+
+            strcpy(miObjResul.continente, continenteAct);
+            miObjResul.anio = anioAct;
+
+            if(contTrimCred > 0)
+            {
+                miObjResul.promTrimCred = acumTrimCred / contTrimCred;
+            }
+            else
+            {
+                miObjResul.promTrimCred = 0.0;
+            }
+
+            if(contTrimDeb > 0)
+            {
+                miObjResul.promTrimDeb = acumTrimDeb / contTrimDeb;
+            }
+            else
+            {
+                miObjResul.promTrimDeb = 0.0;
+            }
+
+            codRet = vectorInsertarAlFinal(&miVecResul, &miObjResul);
+            
+            if(codRet != TODO_OK)
+            {
+                vectorDestruir(&miVecInter);
+                vectorDestruir(&miVecResul);
+                return codRet;
+            }
+        }
+    }
+
+    mostrarResulPromTrimCont(&miVecResul, printResulTrimCont);
+
+    vectorDestruir(&miVecInter);
+    vectorDestruir(&miVecResul);
+
+    return TODO_OK;
+}
+
+void mostrarResulPromTrimCont(const Vector* miVecResul, Print printResulTrimCont)
+{
+    print("\nANIO | CONTINENTE | PROM CRED | PROM DEB\n");
+    vectorMostrar(miVecResul, printResulTrimCont);
 }
 
 int acumularDatosAnuales(const Vector *transferencias, tAnioResumen anios[])

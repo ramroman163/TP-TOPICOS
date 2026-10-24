@@ -56,7 +56,7 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
 
                 totalesPorContinente(pathIntermedio); break;
             case 3:
-                saldoTrimestralPorPais(); break;
+                saldoTrimestralPorPais(transferencias); break;
             case 4:
                 totalesAnualesVariacion(); break;
             case 5:

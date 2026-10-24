@@ -14,6 +14,9 @@ int compararCodigoPais(const void *a, const void *b);
 int compararContinente(const void *a, const void *b);
 int compararCreditoDesc(const void *a, const void *b);
 void printClasificacion(const void *e);
+int compararTransferenciasChar(const void* e1, const void* e2);
+int compararOperacionesFloat(const void* a, const void* b);
+void printResumen(const void *e);
 
 int compararCodigoPaisTotales(const void *a, const void *b); //Para saber si un registro de transferencias
 //pertenece a un pais que ya tenemos en nFuestro vector acumulado

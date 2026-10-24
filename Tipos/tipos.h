@@ -68,4 +68,13 @@ typedef struct{
     float totalDebitos;
 }tTotalOperaciones;
 
+// Estructura agregada para el Punto 4
+typedef struct {
+    int anio;
+    float totalCredito;
+    float totalDebito;
+    float saldo;
+    float variacion;
+} tAnioResumen;
+
 #endif // TIPOS_H_INCLUDED

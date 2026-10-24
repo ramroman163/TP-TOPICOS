@@ -40,19 +40,25 @@ void generarArchivoIntermedio(const char *path_intermedio, const char *path_cont
 
     fprintf(p_intermedio, "ANIO;TRIMESTRE;PAIS_COD;PAIS_DESC;CONTINENTE;OPERACION;MONTO\n");
 
-    for(size_t i = 0 ; i < transferencias->ce ; i++)
+    int cantidad = (int)vectorCE(transferencias);
+
+    for(int i = 0 ; i < cantidad ; i++)
     {
-        int pos = vectorOrdBuscar(&continentes, ((tPersonales*)(transferencias->vec)) + i, compararCodigoPais);
+        tPersonales *transferencia = vectorGetElementoDePos(transferencias, i);
+        
+        int pos = vectorOrdBuscar(&continentes, transferencia, compararCodigoPais);
+
+        tContinentes *continente = vectorGetElementoDePos(&continentes, pos);
 
         tIntermedio elem;
 
-        elem.anio = (((tPersonales*)(transferencias->vec)) + i)->anio;
-        elem.trimestre = (((tPersonales*)(transferencias->vec)) + i)->trimestre;
-        strcpy(elem.codigo_pais, (((tPersonales*)(transferencias->vec))+ i)->codigo_pais);
-        strcpy(elem.descripcion_pais, (((tPersonales*)(transferencias->vec))+ i)->descripcion_pais);
-        strcpy(elem.continente, (((tContinentes*)(continentes.vec))+ pos)->continente);
-        elem.operacion = (((tPersonales*)(transferencias->vec)) + i)->operacion;
-        elem.monto = (((tPersonales*)(transferencias->vec)) + i)->monto;
+        elem.anio = transferencia->anio;
+        elem.trimestre = transferencia->trimestre;
+        strcpy(elem.codigo_pais, transferencia->codigo_pais);
+        strcpy(elem.descripcion_pais, transferencia->descripcion_pais);
+        strcpy(elem.continente, continente->continente);
+        elem.operacion = transferencia->operacion;
+        elem.monto = transferencia->monto;
 
         fprintf(p_intermedio,"%d;%d;%s;%s;%s;%c;%.2f\n", elem.anio, elem.trimestre, elem.codigo_pais,
                 elem.descripcion_pais, elem.continente, elem.operacion, elem.monto);
@@ -75,12 +81,12 @@ void totalesPorContinente(const char *path_intermedio)
         return;
     }
 
-    Vector clasificacion;
+    Vector clasificaciones;
     char linea[256];
     tIntermedio inter;
     tClasificacion clasif;
 
-    vectorCrear(&clasificacion, sizeof(tClasificacion));
+    vectorCrear(&clasificaciones, sizeof(tClasificacion));
 
     fgets(linea, sizeof(linea), p_intermedio);
 
@@ -88,7 +94,7 @@ void totalesPorContinente(const char *path_intermedio)
     {
         armaIntermedio(linea, &inter);
 
-        int pos = vectorDesordBuscar(&clasificacion, &inter, compararContinente);
+        int pos = vectorDesordBuscar(&clasificaciones, &inter, compararContinente);
 
         if(pos == -1)
         {
@@ -103,30 +109,32 @@ void totalesPorContinente(const char *path_intermedio)
             if(inter.operacion == 'D')
                 clasif.total_debito += inter.monto;
 
-            vectorInsertarAlFinal(&clasificacion, &clasif);
+            vectorInsertarAlFinal(&clasificaciones, &clasif);
         }
         else
         {
-            (((tClasificacion*)(clasificacion.vec)) + pos)->registros++;
+            tClasificacion *clasificacion = vectorGetElementoDePos(&clasificaciones, pos);
+
+            clasificacion->registros++;
 
             if(inter.operacion == 'C')
             {
-                (((tClasificacion*)(clasificacion.vec)) + pos)->total_credito += inter.monto;
+                clasificacion->total_credito += inter.monto;
             }
             if(inter.operacion == 'D')
             {
-                (((tClasificacion*)(clasificacion.vec)) + pos)->total_debito += inter.monto;
+               clasificacion->total_debito += inter.monto;
             }
         }
     }
 
     fclose(p_intermedio);
 
-    vectorOrdenar(&clasificacion, INSERCION, compararCreditoDesc);
+    vectorOrdenar(&clasificaciones, INSERCION, compararCreditoDesc);
 
     printf("CONTINENTE - REGISTROS - TOTAL_CREDITO - TOTAL_DEBITO\n");
 
-    vectorMostrar(&clasificacion, printClasificacion);
+    vectorMostrar(&clasificaciones, printClasificacion);
 
-    vectorDestruir(&clasificacion);
+    vectorDestruir(&clasificaciones);
 }

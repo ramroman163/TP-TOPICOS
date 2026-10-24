@@ -9,6 +9,9 @@
 #include "../Utils/utils.h"
 #include "../TDAVector/Vector.h"
 
+int acumularDatosAnuales(const Vector *transferencias, tAnioResumen anios[]);
+void calcularSaldosYVariaciones(tAnioResumen anios[], int cantAnios);
+
 bool verificarExistenciaArchivoIntermedio(const char *path_intermedio)
 {
     FILE *arch = fopen(path_intermedio, "rt");
@@ -612,4 +615,120 @@ int promedioTrimestralPorContinente(const char *path_intermedio)
     cargarArchivoEnVector(path_intermedio, &miVecInter, armaIntermedio);
 
     vectorOrdenar(&miVecInter, FUSION, compararContinenteAnio);
+}
+
+int acumularDatosAnuales(const Vector *transferencias, tAnioResumen anios[])
+{
+    int totalElementos = vectorCantidad(transferencias); //obtiene los registros cargados
+    int cantAnios = 0;
+
+    // 1. Tomamos el primer registro para iniciar el corte
+    tPersonales *reg = (tPersonales*) vectorObtener(transferencias, 0);//obtiene el puntero al primer registro del vector principal
+    int anioActual = reg->anio;//guarda el año de ese primer registro (este sera el punto de referencia inicial para ver cuando hay un cambio de año)
+
+    //Asignamos el primer año
+    (anios + cantAnios)->anio = anioActual;
+
+    // Acumulamos el primer elemento
+    if (reg->operacion == 'C')
+    {
+        (anios + cantAnios)->total_credito += reg->monto;
+    }
+    if (reg->operacion == 'D')
+    {
+        (anios + cantAnios)->total_debito += reg->monto;
+    }
+
+    // 2. Recorremos el resto del vector aplicando el corte de control
+    for (int i = 1; i < totalElementos; i++)
+    {
+        reg = (tPersonales*) vectorObtener(transferencias, i);//obtiene el registro actual en cada iteracion
+
+        // Si cambia de año (Corte de Control)
+        if (reg->anio != anioActual) {
+            cantAnios++; // Avanzamos al siguiente lugar en el vector nuevo
+
+            if (cantAnios >= 12) {
+                break; // Seguridad para no pasarnos del tamaño 12
+            }
+
+            anioActual = reg->anio;
+            // Inicializamos el nuevo año
+            (anios + cantAnios)->anio = anioActual;
+        }
+
+        // 3. Acumulamos montos de crédito o débito en el año actual
+        if (reg->operacion == 'C')
+        {
+            (anios + cantAnios)->total_credito += reg->monto;
+        }
+        if (reg->operacion == 'D')
+        {
+            (anios + cantAnios)->total_debito += reg->monto;
+        }
+    }
+
+    cantAnios++; // Sumamos 1 porque el índice arrancó en 0
+    return cantAnios;
+}
+// --- Función auxiliar 2: Calcula saldos y variaciones interanuales ---
+void calcularSaldosYVariaciones(tAnioResumen anios[], int cantAnios)
+{
+    for (int i = 0; i < cantAnios; i++)
+    {
+        tAnioResumen *A = anios + i; //recorre cada año usando punteros (anios+i)
+
+        // Cálculo del saldo anual (Crédito - Débito)
+        A->saldo = A->totalCredito - A->totalDebito;
+
+        // Cálculo de la variación porcentual de saldo
+        if (i == 0)
+        {
+            A->variacion = 0;//si es el primer registro, asigna 0
+        }
+        else
+        {
+            tAnioResumen *AnioAnterior = anios + (i - 1); //anio anterior
+            if (AnioAnterior->saldo != 0) //si el saldo previo es distinto de 0
+            {
+                A->variacion = ((A->saldo - AnioAnterior->saldo) / AnioAnterior->saldo) * 100;
+            }
+            else
+            {
+                A->variacion = 0;
+            }
+        }
+    }
+}
+
+// --- Función principal del Punto 4 que coordina todo y muestra los resultados ---
+void totalesAnualesVariacion(const Vector *transferencias)
+{
+    tAnioResumen anios[12]={0};//inicializo en 0
+
+    // 1 y 2. Acumulamos y ordenamos los datos desde el vector principal
+    int cantAnios = acumularDatosAnuales(transferencias, anios);
+
+    // 3 y 4. Calculamos saldos y variaciones interanuales
+    calcularSaldosYVariaciones(anios, cantAnios);
+
+    // Mostramos la tabla por pantalla con el formato correspondiente
+    printf("\n%-6s | %-12s | %-12s | %-12s | %-15s\n", "ANIO", "C", "D", "SALDO", "VAR_PCT_SALDO");
+    printf("-----------------------------------------------------------------------\n");
+
+    for (int i = 0; i < cantAnios; i++)
+    {
+        tAnioResumen *A = anios + i;
+
+        if (i == 0)
+        {
+            printf("%-6d | %12.2f | %12.2f | %12.2f | %15s\n",
+                   A->anio, A->totalCredito, A->totalDebito, A->saldo, "NA"); //si es el primer anio, imprime NA en variacion
+        }
+        else
+        {
+            printf("%-6d | %12.2f | %12.2f | %12.2f | %15.2f\n",
+                   A->anio, A->totalCredito, A->totalDebito, A->saldo, A->variacion);
+        }
+    }
 }

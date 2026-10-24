@@ -425,6 +425,13 @@ void vectorMostrar(const Vector* v, Print print)
     }
 }
 
+void* vectorGetElementoDePos(const Vector *v, int pos)
+{
+    void *elementoPos = v->vec + pos * v->tamElem;
+
+    return elementoPos;
+}
+
 
 void vectorVaciar(Vector* v)
 {
@@ -452,8 +459,6 @@ bool ampliarVector(Vector* v)
         return false;
     }
 
-    printf("Ampliacion de %llu a %llu.\n", v->cap, nCap);
-
     v->vec = nVec;
     v->cap = nCap;
 
@@ -471,8 +476,6 @@ void reducirVector(Vector* v)
     }
 
     v->vec = realloc(v->vec, nCap * v->tamElem);
-
-    printf("Reduccion de %llu a %llu.\n", v->cap, nCap);
-
+    
     v->cap = nCap;
 }

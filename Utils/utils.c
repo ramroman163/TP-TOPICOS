@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "utils.h"
 #include "Tipos/tipos.h"
 
@@ -66,8 +67,8 @@ void limpiar_buffer(void)
 void armaTransfPersonales(const char *registro, void * elemento)
 {
     tPersonales *transferencia = (tPersonales *)elemento;
-    
-    sscanf(registro,"%d;%d;%2[^;];%49[^;];%c;%f", &transferencia->anio, &transferencia->trimestre, 
+
+    sscanf(registro,"%d;%d;%2[^;];%49[^;];%c;%f", &transferencia->anio, &transferencia->trimestre,
             transferencia->codigo_pais, transferencia->descripcion_pais, &transferencia->operacion, &transferencia->monto);
 }
 
@@ -116,4 +117,42 @@ void printClasificacion(const void *e)
     const tClasificacion* clasif = (tClasificacion*)e;
     printf("%s - %d - %.2f - %.2f\n", clasif->continente, clasif->registros, clasif->total_credito,
            clasif->total_debito);
+}
+
+
+int compararCodigoPaisTotales(const void *a, const void *b)
+{
+    const tPersonales *transf = (const tPersonales *)a;
+    const tPaisTotales *pais = (const tPaisTotales *)b;
+
+    return strcmpi(transf->codigo_pais, pais->codigo_pais);
+
+}
+
+int compararCreditoPaisDesc(const void *a, const void *b)
+{
+    const tPaisTotales *pais_a = (const tPaisTotales *)a;
+    const tPaisTotales *pais_b = (const tPaisTotales *)b;
+
+    if (pais_b->total_credito > pais_a->total_credito)
+        return 1;
+
+    if (pais_b->total_credito < pais_a->total_credito)
+        return -1;
+
+    return 0;
+}
+
+int compararDebitoPaisDesc(const void *a, const void *b)
+{
+    const tPaisTotales *pais_a = (const tPaisTotales *)a;
+    const tPaisTotales *pais_b = (const tPaisTotales *)b;
+
+    if (pais_b->total_debito > pais_a->total_debito)
+        return 1;
+
+   if (pais_b->total_debito < pais_a->total_debito)
+        return -1;
+
+   return 0;
 }

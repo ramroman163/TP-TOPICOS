@@ -148,8 +148,8 @@ void contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResume
     if(vTransfercias->ce == 0)
         return;
 
-    tPersonales* i = (tPersonales*) vTransfercias->vec;
-    tPersonales* ult = (tPersonales*) vTransfercias->vec + (vTransfercias->ce - 1);
+    tPersonales* i = (tPersonales*) vTransfercias->vec;//lo mismo
+    tPersonales* ult = (tPersonales*) vTransfercias->vec + (vTransfercias->ce - 1);//funcion q devuelve la dir de la ult pos
 
     tTotalOperaciones opResumen;
 
@@ -185,7 +185,10 @@ void contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResume
 
         //guarda en pos 0 e incrementa ce en uno, una vez que encuentra otro país, cargo todo en la prox pos
   
-        vectorInsertarEnPos(vTransfResumen, &opResumen, vTransfResumen->ce);
+        int codRet = vectorInsertarEnPos(vTransfResumen, &opResumen, vTransfResumen->ce);
+
+        if(codRet != TODO_OK)
+            return codRet;
     }
 
 }
@@ -211,6 +214,8 @@ void totalesPorPais(const char* path_transferencias, const Vector *vTransferenci
     ordenarTransferenciasxCredito(&vResumen);
 
     mostrarVectorTransfResumen(&vResumen, printResumen);
+
+    vectorDestruir(&vResumen);
 }
 
 

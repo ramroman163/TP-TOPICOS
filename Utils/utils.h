@@ -17,6 +17,7 @@ float compararPromTrim(const void* a, const void* b);
 int compararCreditoDesc(const void *a, const void *b);
 void printClasificacion(const void *e);
 void printResulTrim(const void *e);
+void printResulTrimCont(const void *e);
 int compararPaisIntermedio(const void *a, const void *b);
 int compararContinenteAnio(const void* a, const void* b);
 int compararTransferenciasChar(const void* e1, const void* e2);

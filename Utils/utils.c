@@ -156,7 +156,7 @@ int compararContinenteAnio(const void* a, const void* b)
         return -1;
     }
     
-    return strcmp(interA->codigo_pais, interB->codigo_pais);
+    return strcmp(interA->continente, interB->continente);
 }
 
 
@@ -223,4 +223,11 @@ void printResumen(const void *e)
     const tTotalOperaciones* resumen = (tTotalOperaciones*)e;
     printf("%-10s  %-30s  %-10d  %15.2f  %15.2f\n", resumen->codigoPais, resumen->descripcionPais, 
         resumen->cantidadRegistros, resumen->totalCreditos, resumen->totalDebitos);
+}
+
+void printResulTrimCont(const void *e)
+{
+    const tResulPromCont* resul = (tResulPromCont*)e;
+
+    printf("%4d | %-30s | %.2f | %.2f\n", resul->anio, resul->continente, resul->promTrimCred, resul->promTrimDeb);
 }

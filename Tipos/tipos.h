@@ -9,7 +9,7 @@ typedef struct
     char descripcion_pais[50];
     char operacion;
     float monto;
-    
+
 }tPersonales;
 
 typedef struct{
@@ -34,6 +34,15 @@ typedef struct{
     char operacion;
     float monto;
 }tIntermedio;
+
+typedef struct
+{
+    char codigo_pais[3];
+    char descripcion_pais[50];
+    float total_credito;
+    float total_debito;
+    int registros;
+}tPaisTotales;
 
 typedef struct{
     char codigoPais[3];

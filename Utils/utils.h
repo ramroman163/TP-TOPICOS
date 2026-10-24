@@ -18,4 +18,10 @@ int compararTransferenciasChar(const void* e1, const void* e2);
 int compararOperacionesFloat(const void* a, const void* b);
 void printResumen(const void *e);
 
+int compararCodigoPaisTotales(const void *a, const void *b); //Para saber si un registro de transferencias
+//pertenece a un pais que ya tenemos en nFuestro vector acumulado
+int compararCreditoPaisDesc(const void *a, const void *b); //Para ordenar de Mayor a Menor por credito
+int compararDebitoPaisDesc(const void *a, const void *b); //Para ordenar de Mayor a Menor por debito
+
+
 #endif // UTILS_H_INCLUDED

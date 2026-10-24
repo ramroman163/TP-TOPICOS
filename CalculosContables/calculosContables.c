@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #include "../Tipos/tipos.h"
 #include "../Archivos/archivos.h"
@@ -357,3 +358,98 @@ void saldoTrimestralPorPais(const Vector* transferencias)
     }
     vectorDestruir(&vAnio);
 }
+
+
+
+//Punto 5
+
+void rankingPaises(const Vector *transferencias)
+{
+    Vector paises;
+    tPaisTotales paisAux;
+    char operacion;
+    int n;
+    size_t totalPaises;
+    size_t i;
+
+    if (transferencias == NULL || transferencias->ce == 0)
+    {
+        printf("ERROR: No hay datos de transferencias cargados en memoria.\n");
+        return;
+    }
+
+//Valido e ingreso el tipo de operacion
+    do
+    {
+        printf("Ingrese el tipo de operacion ('C' para Credito, 'D' para Debito): ");
+        scanf(" %c", &operacion);
+
+        operacion = toupper(operacion);
+    } while (operacion != 'C' && operacion != 'D');
+
+
+    vectorCrear(&paises, sizeof(tPaisTotales));
+
+    for (i=0; i< transferencias->ce; i++) //Acumulo registros por pais
+    {
+        const tPersonales *t = ((const tPersonales *)(transferencias->vec)) + i;
+
+
+        int pos = vectorDesordBuscar(&paises, t, compararCodigoPaisTotales);
+
+        if (pos == -1)
+        {
+            strcpy(paisAux.codigo_pais, t->codigo_pais);
+            strcpy(paisAux.descripcion_pais, t->descripcion_pais);
+            paisAux.registros = 1;
+            paisAux.total_credito = (t->operacion == 'C') ? t->monto : 0;
+            paisAux.total_debito = (t->operacion == 'D') ? t->monto : 0;
+
+            vectorInsertarAlFinal(&paises, &paisAux);
+        }
+            else
+            {
+                tPaisTotales *paisExistente = ((tPaisTotales *)(paises.vec)) + pos;
+                paisExistente->registros++;
+
+                if (t->operacion == 'C')
+                    paisExistente->total_credito += t->monto;
+                else if (t->operacion == 'D')
+                    paisExistente->total_debito += t->monto;
+            }
+    }
+
+    totalPaises = vectorCE(&paises);
+
+    if (totalPaises == 0)
+    {
+        printf("No se encontraron registros de paises para procesar.\n");
+        vectorDestruir(&paises);
+        return;
+    }
+
+    printf("\n=============================================================================\n");
+    printf("-------------------- RANKING DE PAISES -------------------\n");
+    printf("\n==============================================================================\n");
+
+    n = ingresarEnteroRango(1, (int)totalPaises, "Ingrese la cantidad N de paises a listar:");
+
+        //Comienzo a ordenar
+    if (operacion == 'C')
+        vectorOrdenar(&paises, INSERCION, compararCreditoPaisDesc);
+    else
+        vectorOrdenar(&paises, INSERCION, compararDebitoPaisDesc);
+
+
+        printf("\n%-10s | %-25s | %-10s | %-15s | %-15s\n", "PAIS_COD", "PAIS_DESC", "registros", "total_credito", "total_debito");
+
+        for(i=0; i < (size_t)n; i++)
+        {
+            const tPaisTotales *pais = ((const tPaisTotales *)(paises.vec)) + i;
+
+        printf("%-10s | %-25s | %10d | %15.2f | %15.2f\n", pais->codigo_pais, pais->descripcion_pais, pais->registros, pais->total_credito, pais->total_debito);
+    }
+
+    vectorDestruir(&paises);
+}
+

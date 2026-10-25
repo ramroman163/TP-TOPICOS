@@ -11,11 +11,11 @@ void totalesAnualesVariacion();
 void rankingPaises(const Vector *transferencias);
 void participacionPorContinente();
 void generarArchivoIntermedio(const char *path_intermedio, const char *path_continentes, const Vector* transferencias);
-void promedioTrimestralPorPais();
-void promedioTrimestralPorContinente();
-bool verificarExistenciaArchivoIntermedio(const char *path_intermedio);
-void promedioTrimestralPorPais(const char *path_intermedio);
-void mostrarResulPromTrim(const Vector* miVecResul, Print printResulPromTrim);
+int promedioTrimestralPorPais(const char *pathIntermedio);
+int promedioTrimestralPorContinente(const char *pathIntermedio);
+void mostrarResulPromTrimPais(const Vector* miVecResul, Print printResulPromTrim);
+void mostrarResulPromTrimCont(const Vector* miVecResul, Print printResulTrimCont);
+bool verificarExistenciaArchivoIntermedio(const char *pathIntermedio);
 
 void ordenarTransferenciasxCod(Vector* transferencias);
 void ordenarTransferenciasxCredito(Vector* transferencias);

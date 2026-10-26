@@ -43,13 +43,14 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
     {
         mostrarOpciones();
         opcion = ingresarEnteroRango(1,10,"Opcion: ");
+        bool existe;
 
         switch (opcion)
         {
             case 1:
-                totalesPorPais(); break;
+                totalesPorPais(transferencias); break;
             case 2:
-                bool existe = verificarExistenciaArchivoIntermedio(pathIntermedio);
+                existe = verificarExistenciaArchivoIntermedio(pathIntermedio);
 
                 if(existe == false)
                     generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias);
@@ -58,24 +59,26 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
             case 3:
                 saldoTrimestralPorPais(transferencias); break;
             case 4:
-                totalesAnualesVariacion(); break;
+                //totalesAnualesVariacion();
+                break;
             case 5:
                 rankingPaises(transferencias); break;
             case 6:
-                participacionPorContinente(); break;
+                //participacionPorContinente();
+                break;
             case 7:
                 generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias); break;
             case 8:
 
-                bool existe = verificarExistenciaArchivoIntermedio(pathIntermedio);
+                existe = verificarExistenciaArchivoIntermedio(pathIntermedio);
 
                 if(!existe)
                 {
                     generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias);
                 }
-                //promedioTrimestralPorPais(); break;
+                promedioTrimestralPorPais(pathIntermedio); break;
             case 9:
-                promedioTrimestralPorContinente(); break;
+                promedioTrimestralPorContinente(pathIntermedio); break;
             case 10:
                 printf("Hasta luego.\n"); break;
             default:

@@ -4,7 +4,7 @@
 #include "../TDAVector/Vector.h"
 #include "../Tipos/tipos.h"
 
-void totalesPorPais();
+void totalesPorPais(const Vector *vTransferencias);
 void totalesPorContinente(const char *path_intermedio);
 void saldoTrimestralPorPais(const Vector* transferencias);
 void totalesAnualesVariacion();
@@ -19,7 +19,7 @@ bool verificarExistenciaArchivoIntermedio(const char *pathIntermedio);
 
 void ordenarTransferenciasxCod(Vector* transferencias);
 void ordenarTransferenciasxCredito(Vector* transferencias);
-void contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResumen);
+int contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResumen);
 void mostrarVectorTransfResumen(const Vector* v, Print printResumen);
 int compararPaisNombre(const void* a, const void* b);
 

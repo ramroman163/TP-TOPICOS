@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "utils.h"
-#include "Tipos/tipos.h"
+#include "../Tipos/tipos.h"
 
 int ingresarEntero(char *mensaje)
 {
@@ -155,7 +155,7 @@ int compararContinenteAnio(const void* a, const void* b)
     {
         return -1;
     }
-    
+
     return strcmp(interA->continente, interB->continente);
 }
 
@@ -215,13 +215,13 @@ int compararOperacionesFloat(const void* a, const void* b)
         return 1;
     if (op2->totalCreditos < op1->totalCreditos)
         return -1;
-    
+
     return 0;
 }
 void printResumen(const void *e)
 {
     const tTotalOperaciones* resumen = (tTotalOperaciones*)e;
-    printf("%-10s  %-30s  %-10d  %15.2f  %15.2f\n", resumen->codigoPais, resumen->descripcionPais, 
+    printf("%-10s  %-30s  %-10d  %15.2f  %15.2f\n", resumen->codigoPais, resumen->descripcionPais,
         resumen->cantidadRegistros, resumen->totalCreditos, resumen->totalDebitos);
 }
 

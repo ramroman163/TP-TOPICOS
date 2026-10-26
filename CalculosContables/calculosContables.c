@@ -48,7 +48,7 @@ void generarArchivoIntermedio(const char *path_intermedio, const char *path_cont
     for(int i = 0 ; i < cantidad ; i++)
     {
         tPersonales *transferencia = vectorGetElementoDePos(transferencias, i);
-        
+
         int pos = vectorOrdBuscar(&continentes, transferencia, compararCodigoPais);
 
         tContinentes *continente = vectorGetElementoDePos(&continentes, pos);
@@ -151,10 +151,10 @@ void ordenarTransferenciasxCredito(Vector* transferencias)
     vectorOrdenar(transferencias, FUSION, compararOperacionesFloat);
 }
 
-void contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResumen)
+int contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResumen)
 {
     if(vTransfercias->ce == 0)
-        return;
+        return SIN_DATOS;
 
     // tPersonales* i = (tPersonales*) vTransfercias->vec;//lo mismo
     //tPersonales* ult = (tPersonales*) vTransfercias->vec + (vTransfercias->ce - 1);
@@ -189,19 +189,20 @@ void contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResume
         } while(i<=ult && strcmpi(codPaisActual, i->codigo_pais) == 0);
 
         strcpy(opResumen.codigoPais, codPaisActual);
-        strcpy(opResumen.descripcionPais, descPaisActual); 
+        strcpy(opResumen.descripcionPais, descPaisActual);
         opResumen.cantidadRegistros = contRegistros;
         opResumen.totalCreditos = acumCreditos;
         opResumen.totalDebitos = acumDebitos;
 
         //guarda en pos 0 e incrementa ce en uno, una vez que encuentra otro país, cargo todo en la prox pos
-  
+
         int codRet = vectorInsertarEnPos(vTransfResumen, &opResumen, vTransfResumen->ce);
 
         if(codRet != TODO_OK)
             return codRet;
     }
 
+    return TODO_OK;
 }
 
 void mostrarVectorTransfResumen(const Vector* v, Print printResumen)
@@ -211,7 +212,7 @@ void mostrarVectorTransfResumen(const Vector* v, Print printResumen)
     vectorMostrar(v, printResumen);
 }
 
-void totalesPorPais(const char* path_transferencias, const Vector *vTransferencias)
+void totalesPorPais(const Vector *vTransferencias)
 {
     Vector copiaTransferencias; //para no reordenar el vector principal
 
@@ -443,21 +444,30 @@ void rankingPaises(const Vector *transferencias)
 
         //Comienzo a ordenar
     if (operacion == 'C')
+    {
         vectorOrdenar(&paises, INSERCION, compararCreditoPaisDesc);
+    }
     else
+    {
         vectorOrdenar(&paises, INSERCION, compararDebitoPaisDesc);
+    }
 
+    printf("\n%-10s | %-25s | %-10s | %-15s | %-15s\n", "PAIS_COD", "PAIS_DESC", "registros", "total_credito", "total_debito");
 
-        printf("\n%-10s | %-25s | %-10s | %-15s | %-15s\n", "PAIS_COD", "PAIS_DESC", "registros", "total_credito", "total_debito");
-
-        for(i=0; i < (size_t)n; i++)
-        {
-            const tPaisTotales *pais = vectorGetElementoDePos(&paises, i);
+    for(i=0; i < (size_t)n; i++)
+    {
+        const tPaisTotales *pais = vectorGetElementoDePos(&paises, i);
 
         printf("%-10s | %-25s | %10d | %15.2f | %15.2f\n", pais->codigo_pais, pais->descripcion_pais, pais->registros, pais->total_credito, pais->total_debito);
     }
 
     vectorDestruir(&paises);
+}
+
+void mostrarResulPromTrimPais(const Vector* miVecResul, Print printResulPromTrim)
+{
+    printf("COD_PAIS - NOMBRE_PAIS - TIPO OPERACION - CANT TRIMESTRES - PROMEDIO\n");
+    vectorMostrar(miVecResul, printResulPromTrim);
 }
 
 // Punto 8
@@ -498,13 +508,11 @@ int promedioTrimestralPorPais(const char *path_intermedio)
     tResulProm miObjResul;
     char codPais[3];
 
-    size_t tamInter = sizeof(tIntermedio);
-
     tIntermedio* i = vectorGetElementoDePos(&miVecInter, 0);
     tIntermedio* ult = vectorGetElementoDePos(&miVecInter, (int)vectorCE(&miVecInter) - 1);
 
     actObjInt = *i;
-    
+
     while(i <= ult)
     {
         strcpy(codPais, actObjInt.codigo_pais);
@@ -518,18 +526,18 @@ int promedioTrimestralPorPais(const char *path_intermedio)
         while(i <= ult && strcmp(actObjInt.codigo_pais, codPais) == 0)
         {
             if(actObjInt.monto > 0)
-            {   
+            {
                 if(actObjInt.operacion == 'C')
                 {
                     contTrimCred++;
                     acumTrimCred += actObjInt.monto;
-                } 
+                }
                 else
                 {
                     contTrimDeb++;
                     acumTrimDeb += actObjInt.monto;
                 }
-                
+
             }
 
             i++;
@@ -541,7 +549,7 @@ int promedioTrimestralPorPais(const char *path_intermedio)
         }
 
         miObjResul.operacion = 'C';
-        
+
         if(contTrimCred == 0)
         {
             miObjResul.prom = 0.0;
@@ -556,7 +564,7 @@ int promedioTrimestralPorPais(const char *path_intermedio)
         vectorInsertarAlFinal(&miVecResul, &miObjResul);
 
         miObjResul.operacion = 'D';
-        
+
         if(contTrimDeb == 0)
         {
             miObjResul.prom = 0.0;
@@ -574,7 +582,7 @@ int promedioTrimestralPorPais(const char *path_intermedio)
         {
             vectorDestruir(&miVecInter);
             vectorDestruir(&miVecResul);
-        return codRet;
+            return codRet;
         }
     }
 
@@ -588,13 +596,15 @@ int promedioTrimestralPorPais(const char *path_intermedio)
     return TODO_OK;
 }
 
-void mostrarResulPromTrimPais(const Vector* miVecResul, Print printResulTrim)
-{
-    printf("COD_PAIS - NOMBRE_PAIS - TIPO OPERACION - CANT TRIMESTRES - PROMEDIO\n");
-    vectorMostrar(miVecResul, printResulTrim);
-}
+
 
 // Punto 9
+void mostrarResulPromTrimCont(const Vector* miVecResul, Print printResulTrimCont)
+{
+    printf("\nANIO | CONTINENTE | PROM CRED | PROM DEB\n");
+    vectorMostrar(miVecResul, printResulTrimCont);
+}
+
 int promedioTrimestralPorContinente(const char *path_intermedio)
 {
     Vector miVecInter;
@@ -696,7 +706,7 @@ int promedioTrimestralPorContinente(const char *path_intermedio)
             }
 
             codRet = vectorInsertarAlFinal(&miVecResul, &miObjResul);
-            
+
             if(codRet != TODO_OK)
             {
                 vectorDestruir(&miVecInter);
@@ -714,13 +724,8 @@ int promedioTrimestralPorContinente(const char *path_intermedio)
     return TODO_OK;
 }
 
-void mostrarResulPromTrimCont(const Vector* miVecResul, Print printResulTrimCont)
-{
-    print("\nANIO | CONTINENTE | PROM CRED | PROM DEB\n");
-    vectorMostrar(miVecResul, printResulTrimCont);
-}
-
 // Punto 4
+/*
 int acumularDatosAnuales(const Vector *transferencias, tAnioResumen anios[])
 {
     int totalElementos = vectorCantidad(transferencias); //obtiene los registros cargados
@@ -835,3 +840,4 @@ void totalesAnualesVariacion(const Vector *transferencias)
         }
     }
 }
+*/

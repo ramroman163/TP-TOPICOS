@@ -1,0 +1,69 @@
+# depslib dependency file v1.0
+1792970278 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\archivos\archivos.c
+	<stdio.h>
+	<stdlib.h>
+	"../TDAVector/Vector.h"
+
+1792971788 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\tdavector\vector.h
+	<stddef.h>
+	<stdbool.h>
+	"../Utils/CodigosRetorno.h"
+
+1792971333 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\utils\codigosretorno.h
+
+1792972605 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\calculoscontables\calculoscontables.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	<ctype.h>
+	"../Tipos/tipos.h"
+	"../Archivos/archivos.h"
+	"../Utils/utils.h"
+	"../TDAVector/Vector.h"
+
+1792970278 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\tipos\tipos.h
+
+1792970278 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\archivos\archivos.h
+	<stdio.h>
+	<stdlib.h>
+	"../TDAVector/Vector.h"
+
+1792970278 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\utils\utils.h
+
+1792972652 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\menu\menu.c
+	<stdio.h>
+	<stdbool.h>
+	"menu.h"
+	"../Utils/utils.h"
+	"../CalculosContables/calculosContables.h"
+
+1792971436 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\menu\menu.h
+	"../Tipos/tipos.h"
+	"../TDAVector/Vector.h"
+
+1792971876 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\calculoscontables\calculoscontables.h
+	"../TDAVector/Vector.h"
+	"../Tipos/tipos.h"
+
+1792970278 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\tdavector\vector.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"Vector.h"
+
+1792971521 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\utils\utils.c
+	<stdio.h>
+	<string.h>
+	"utils.h"
+	"../Tipos/tipos.h"
+
+1792970755 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\main.c
+	<stdio.h>
+	<stdlib.h>
+	"../Menu/menu.h"
+	"../Tipos/tipos.h"
+	"../Archivos/archivos.h"
+	"../Utils/utils.h"
+	"../TDAVector/Vector.h"
+

@@ -38,6 +38,7 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
 {
 
     int opcion;
+    bool existe;
 
     do
     {
@@ -49,7 +50,7 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
             case 1:
                 totalesPorPais(transferencias); break;
             case 2:
-                bool existe = verificarExistenciaArchivoIntermedio(pathIntermedio);
+                existe = verificarExistenciaArchivoIntermedio(pathIntermedio);
 
                 if(existe == false)
                     generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias);
@@ -67,7 +68,7 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
                 generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias); break;
             case 8:
 
-                bool existe = verificarExistenciaArchivoIntermedio(pathIntermedio);
+                existe = verificarExistenciaArchivoIntermedio(pathIntermedio);
 
                 if(!existe)
                 {

@@ -3,14 +3,9 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+#include "../Utils/CodigosRetorno.h"
 
 #define CAP_INI 8
-
-#define TODO_OK 0
-#define LLENO 1
-#define DUPLICADO 2
-#define POS_INV 3
-#define SIN_MEM 4
 
 #define FACTOR_INCR 1.5 // > 1
 #define FACTOR_OCUP 0.25 // < 1
@@ -51,6 +46,6 @@ void vectorMostrar(const Vector* v, Print print);
 void* vectorGetElementoDePos(const Vector *v, int pos);
 void vectorVaciar(Vector* v); // realloc
 void vectorDestruir(Vector* v); // free
-
+void vectorCopiar(Vector* dest, const Vector* orig);
 
 #endif // VECTOR_H_INCLUDED

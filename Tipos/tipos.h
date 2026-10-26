@@ -9,7 +9,7 @@ typedef struct
     char descripcion_pais[50];
     char operacion;
     float monto;
-    
+
 }tPersonales;
 
 typedef struct{
@@ -36,11 +36,36 @@ typedef struct{
 }tIntermedio;
 
 typedef struct{
+    char codigo_pais[3];
+    char descripcion_pais[50];
+    char operacion;
+    int cantTrim;
+    float prom;
+}tResulProm;
+
+// Punto 9
+typedef struct{
+    int anio;
+    char continente[20];
+    float promTrimDeb;
+    float promTrimCred;
+}tResulPromCont;
+
+typedef struct{
     char codigoPais[3];
     char descripcionPais[50];
     int cantidadRegistros;
     float totalCreditos;
     float totalDebitos;
 }tTotalOperaciones;
+
+// Estructura agregada para el Punto 4
+typedef struct {
+    int anio;
+    float totalCredito;
+    float totalDebito;
+    float saldo;
+    float variacion;
+} tAnioResumen;
 
 #endif // TIPOS_H_INCLUDED

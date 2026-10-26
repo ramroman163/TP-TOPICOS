@@ -58,7 +58,7 @@ int generarArchivoIntermedio(const char *path_intermedio, const char *path_conti
     for(int i = 0 ; i < cantidad ; i++)
     {
         tPersonales *transferencia = vectorGetElementoDePos(transferencias, i);
-        
+
         int pos = vectorOrdBuscar(&continentes, transferencia, compararCodigoPais);
 
         if(pos == -1)
@@ -161,7 +161,7 @@ int totalesPorContinente(const char *path_intermedio)
     vectorMostrar(&clasificaciones, printClasificacion);
 
     vectorDestruir(&clasificaciones);
-    
+
     return TODO_OK;
 }
 
@@ -214,19 +214,19 @@ int contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResumen
         } while(i<=ult && strcmpi(codPaisActual, i->codigo_pais) == 0);
 
         strcpy(opResumen.codigoPais, codPaisActual);
-        strcpy(opResumen.descripcionPais, descPaisActual); 
+        strcpy(opResumen.descripcionPais, descPaisActual);
         opResumen.cantidadRegistros = contRegistros;
         opResumen.totalCreditos = acumCreditos;
         opResumen.totalDebitos = acumDebitos;
 
         //guarda en pos 0 e incrementa ce en uno, una vez que encuentra otro país, cargo todo en la prox pos
-  
+
         int codRet = vectorInsertarEnPos(vTransfResumen, &opResumen, vTransfResumen->ce);
 
         if(codRet != TODO_OK)
             return codRet;
     }
-    
+
     return TODO_OK;
 }
 
@@ -420,7 +420,7 @@ int rankingPaises(const Vector *transferencias)
         printf("ERROR - El puntero a transferencias es nulo.\n");
         return SIN_DATOS;
     }
-    
+
     if(vectorCE(transferencias)==0)
     {
         printf("ERROR: No hay datos de transferencias cargados en memoria.\n");
@@ -496,14 +496,12 @@ int rankingPaises(const Vector *transferencias)
 
     for(i=0; i < (size_t)n; i++)
     {
-        const tTotalOperaciones *pais = vectorGetElementoDePos(&paises, i);
-
-        printf("%-10s | %-25s | %10d | %15.2f | %15.2f\n", pais->codigoPais, pais->descripcionPais, pais->cantidadRegistros, pais->totalCreditos, pais->totalDebitos);
+        printResumen(vectorGetElementoDePos(&paises, i));
     }
 
     vectorDestruir(&paises);
     return TODO_OK;
-    
+
 }
 
 // Punto 8
@@ -554,7 +552,7 @@ int promedioTrimestralPorPais(const char *path_intermedio)
     tIntermedio* ult = vectorGetElementoDePos(&miVecInter, (int)vectorCE(&miVecInter) - 1);
 
     actObjInt = *i;
-    
+
     while(i <= ult)
     {
         strcpy(codPais, actObjInt.codigo_pais);
@@ -568,18 +566,18 @@ int promedioTrimestralPorPais(const char *path_intermedio)
         while(i <= ult && strcmp(actObjInt.codigo_pais, codPais) == 0)
         {
             if(actObjInt.monto > 0)
-            {   
+            {
                 if(actObjInt.operacion == 'C')
                 {
                     contTrimCred++;
                     acumTrimCred += actObjInt.monto;
-                } 
+                }
                 else
                 {
                     contTrimDeb++;
                     acumTrimDeb += actObjInt.monto;
                 }
-                
+
             }
 
             i++;
@@ -591,7 +589,7 @@ int promedioTrimestralPorPais(const char *path_intermedio)
         }
 
         miObjResul.operacion = 'C';
-        
+
         if(contTrimCred == 0)
         {
             miObjResul.prom = 0.0;
@@ -606,7 +604,7 @@ int promedioTrimestralPorPais(const char *path_intermedio)
         vectorInsertarAlFinal(&miVecResul, &miObjResul);
 
         miObjResul.operacion = 'D';
-        
+
         if(contTrimDeb == 0)
         {
             miObjResul.prom = 0.0;
@@ -747,7 +745,7 @@ int promedioTrimestralPorContinente(const char *path_intermedio)
             }
 
             codRet = vectorInsertarAlFinal(&miVecResul, &miObjResul);
-            
+
             if(codRet != TODO_OK)
             {
                 vectorDestruir(&miVecInter);
@@ -780,7 +778,7 @@ int acumularDatosAnuales(const Vector *transferencias, Vector* anios)
     {
         anioActual.anio = i->anio;
         anioActual.totalCredito = 0.0;
-        anioActual.totalDebito = 0.0;        
+        anioActual.totalDebito = 0.0;
 
         while(i <= ult && anioActual.anio == i->anio)
         {
@@ -818,11 +816,11 @@ void calcularSaldosYVariaciones(Vector* anios)
     // Primer anio sin variacion
     i->variacion = 0.0;
     i++;
-    
+
     while(i <= ult)
     {
         aux = i - 1;
-        
+
         if (aux->saldo != 0.0) //si el saldo previo es distinto de 0
         {
             i->variacion = ((i->saldo - aux->saldo) / aux->saldo) * 100;
@@ -858,7 +856,7 @@ int totalesAnualesVariacion(const Vector *transferencias)
     {
         return codRet;
     }
-    
+
     // 3 y 4. Calculamos saldos y variaciones interanuales
     calcularSaldosYVariaciones(&anios);
     // Mostramos la tabla por pantalla con el formato correspondiente

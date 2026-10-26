@@ -25,11 +25,15 @@ bool verificarExistenciaArchivoIntermedio(const char *path_intermedio)
 }
 
 // Punto 7
-void generarArchivoIntermedio(const char *path_intermedio, const char *path_continentes, const Vector* transferencias)
+
+int generarArchivoIntermedio(const char *path_intermedio, const char *path_continentes, const Vector* transferencias)
 {
     Vector continentes;
 
-    vectorCrear(&continentes, sizeof(tContinentes));
+    if(!vectorCrear(&continentes, sizeof(tContinentes)))
+    {
+        return SIN_MEM;
+    }
 
     cargarArchivoEnVector(path_continentes, &continentes, armaContinentes);
 
@@ -45,26 +49,36 @@ void generarArchivoIntermedio(const char *path_intermedio, const char *path_cont
 
     int cantidad = (int)vectorCE(transferencias);
 
+    if(cantidad == 0)
+    {
+        return SIN_DATOS;
+    }
+
     for(int i = 0 ; i < cantidad ; i++)
     {
         tPersonales *transferencia = vectorGetElementoDePos(transferencias, i);
         
         int pos = vectorOrdBuscar(&continentes, transferencia, compararCodigoPais);
 
-        tContinentes *continente = vectorGetElementoDePos(&continentes, pos);
+        if(pos == -1)
+            printf("No se pudo procesar la transferencia %d\n", i + 1);
+        else
+        {
+            tContinentes *continente = vectorGetElementoDePos(&continentes, pos);
 
-        tIntermedio elem;
+            tIntermedio elem;
 
-        elem.anio = transferencia->anio;
-        elem.trimestre = transferencia->trimestre;
-        strcpy(elem.codigo_pais, transferencia->codigo_pais);
-        strcpy(elem.descripcion_pais, transferencia->descripcion_pais);
-        strcpy(elem.continente, continente->continente);
-        elem.operacion = transferencia->operacion;
-        elem.monto = transferencia->monto;
+            elem.anio = transferencia->anio;
+            elem.trimestre = transferencia->trimestre;
+            strcpy(elem.codigo_pais, transferencia->codigo_pais);
+            strcpy(elem.descripcion_pais, transferencia->descripcion_pais);
+            strcpy(elem.continente, continente->continente);
+            elem.operacion = transferencia->operacion;
+            elem.monto = transferencia->monto;
 
-        fprintf(p_intermedio,"%d;%d;%s;%s;%s;%c;%.2f\n", elem.anio, elem.trimestre, elem.codigo_pais,
+            fprintf(p_intermedio,"%d;%d;%s;%s;%s;%c;%.2f\n", elem.anio, elem.trimestre, elem.codigo_pais,
                 elem.descripcion_pais, elem.continente, elem.operacion, elem.monto);
+        }
     }
 
     fclose(p_intermedio);
@@ -72,7 +86,7 @@ void generarArchivoIntermedio(const char *path_intermedio, const char *path_cont
 }
 
 // Punto 2
-void totalesPorContinente(const char *path_intermedio)
+int totalesPorContinente(const char *path_intermedio)
 {
     FILE *p_intermedio = fopen(path_intermedio, "rt");
 
@@ -87,7 +101,10 @@ void totalesPorContinente(const char *path_intermedio)
     tIntermedio inter;
     tClasificacion clasif;
 
-    vectorCrear(&clasificaciones, sizeof(tClasificacion));
+    if(!vectorCrear(&clasificaciones, sizeof(tClasificacion)))
+    {
+        return SIN_MEM;
+    }
 
     fgets(linea, sizeof(linea), p_intermedio);
 
@@ -110,7 +127,10 @@ void totalesPorContinente(const char *path_intermedio)
             if(inter.operacion == 'D')
                 clasif.total_debito += inter.monto;
 
-            vectorInsertarAlFinal(&clasificaciones, &clasif);
+            int codRet = vectorInsertarAlFinal(&clasificaciones, &clasif);
+
+            if(codRet != TODO_OK)
+                return codRet;
         }
         else
         {

@@ -482,7 +482,8 @@ void reducirVector(Vector* v)
 
 void vectorCopiar(Vector* dest, const Vector* orig)
 {
-    vectorCrear(dest, orig->tamElem);
+    if(!vectorCrear(dest, orig->tamElem));
+        return SIN_MEM;
 
     dest->ce = orig->ce;
     dest->cap = orig->cap;

@@ -153,15 +153,16 @@ void ordenarTransferenciasxCredito(Vector* transferencias)
 
 void contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResumen)
 {
-    if(vTransfercias->ce == 0)
+    int cantidadElem = (int)vectorCE(vTransfercias);
+
+    if(cantidadElem == 0)
         return;
 
-    // tPersonales* i = (tPersonales*) vTransfercias->vec;//lo mismo
+    // tPersonales* i = (tPersonales*) vTransfercias->vec; para no romper encapsulamiento
     //tPersonales* ult = (tPersonales*) vTransfercias->vec + (vTransfercias->ce - 1);
 
-    int cantidadElem = (int)vectorCE(vTransfercias);
     tPersonales* i = vectorGetElementoDePos(vTransfercias, 0);
-    tPersonales* ult = vectorGetElementoDePos(vTransfercias, cantidadElem-1);
+    tPersonales* ult = vectorGetElementoDePos(vTransfercias, cantidadElem - 1);
     tTotalOperaciones opResumen;
 
     while(i <= ult)
@@ -221,7 +222,8 @@ void totalesPorPais(const char* path_transferencias, const Vector *vTransferenci
 
     Vector vResumen; //para  guardar la nueva estructura en un vector
 
-    vectorCrear(&vResumen, sizeof(tTotalOperaciones));
+    if(!vectorCrear(&vResumen, sizeof(tTotalOperaciones)));
+        return SIN_MEM;
 
     //hago corte de control
     contaryCargarOperaciones(&copiaTransferencias, &vResumen);
@@ -374,13 +376,14 @@ void saldoTrimestralPorPais(const Vector* transferencias)
 void rankingPaises(const Vector *transferencias)
 {
     Vector paises;
-    tPaisTotales paisAux;
+    tTotalOperaciones paisAux;
     char operacion;
     int n;
     size_t totalPaises;
-    size_t i;
+    int i;
+    int cantidadElem = (int)vectorCE(transferencias);//reemplazo transferencias->ce por cantidadElem en el siguiente if y en el for
 
-    if (transferencias == NULL || transferencias->ce == 0)
+    if (transferencias == NULL || cantidadElem == 0)
     {
         printf("ERROR: No hay datos de transferencias cargados en memoria.\n");
         return;
@@ -396,33 +399,36 @@ void rankingPaises(const Vector *transferencias)
     } while (operacion != 'C' && operacion != 'D');
 
 
-    vectorCrear(&paises, sizeof(tPaisTotales));
+    if(!vectorCrear(&paises, sizeof(tTotalOperaciones)));
+        return SIN_MEM;
 
-    for (i=0; i< transferencias->ce; i++) //Acumulo registros por pais
+    for (i = 0; i < cantidadElem; i++) //Acumulo registros por pais
     {
-        const tPersonales *t = vectorGetElementoDePos(transferencias, i);
+        const tPersonales *t = (tPersonales*)vectorGetElementoDePos(transferencias, i);//casteo el void* por la estructura correcta
 
         int pos = vectorDesordBuscar(&paises, t, compararCodigoPaisTotales);
 
         if (pos == -1)
         {
-            strcpy(paisAux.codigo_pais, t->codigo_pais);
-            strcpy(paisAux.descripcion_pais, t->descripcion_pais);
-            paisAux.registros = 1;
-            paisAux.total_credito = (t->operacion == 'C') ? t->monto : 0;
-            paisAux.total_debito = (t->operacion == 'D') ? t->monto : 0;
+            strcpy(paisAux.codigoPais, t->codigo_pais);
+            strcpy(paisAux.descripcionPais, t->descripcion_pais);
+            paisAux.cantidadRegistros = 1;
+            paisAux.totalCreditos = (t->operacion == 'C') ? t->monto : 0;
+            paisAux.totalDebitos = (t->operacion == 'D') ? t->monto : 0;
 
-            vectorInsertarAlFinal(&paises, &paisAux);
+            int codRet = vectorInsertarAlFinal(&paises, &paisAux);
+            if(codRet != TODO_OK)
+                return codRet;
         }
             else
             {
-                tPaisTotales *paisExistente = vectorGetElementoDePos(&paises, pos);
-                paisExistente->registros++;
+                tTotalOperaciones *paisExistente = vectorGetElementoDePos(&paises, pos);
+                paisExistente->cantidadRegistros++;
 
                 if (t->operacion == 'C')
-                    paisExistente->total_credito += t->monto;
+                    paisExistente->totalCreditos += t->monto;
                 else if (t->operacion == 'D')
-                    paisExistente->total_debito += t->monto;
+                    paisExistente->totalDebitos += t->monto;
             }
     }
 
@@ -452,9 +458,9 @@ void rankingPaises(const Vector *transferencias)
 
         for(i=0; i < (size_t)n; i++)
         {
-            const tPaisTotales *pais = vectorGetElementoDePos(&paises, i);
+            const tTotalOperaciones *pais = vectorGetElementoDePos(&paises, i);
 
-        printf("%-10s | %-25s | %10d | %15.2f | %15.2f\n", pais->codigo_pais, pais->descripcion_pais, pais->registros, pais->total_credito, pais->total_debito);
+        printf("%-10s | %-25s | %10d | %15.2f | %15.2f\n", pais->codigoPais, pais->descripcionPais, pais->cantidadRegistros, pais->totalCredito, pais->totalDebitos);
     }
 
     vectorDestruir(&paises);
@@ -727,7 +733,7 @@ int acumularDatosAnuales(const Vector *transferencias, tAnioResumen anios[])
     int cantAnios = 0;
 
     // 1. Tomamos el primer registro para iniciar el corte
-    tPersonales *reg = (tPersonales*) vectorObtener(transferencias, 0);//obtiene el puntero al primer registro del vector principal
+    tPersonales *reg = (tPersonales*) vectorGetElementoDePos(transferencias, 0);//obtiene el puntero al primer registro del vector principal
     int anioActual = reg->anio;//guarda el año de ese primer registro (este sera el punto de referencia inicial para ver cuando hay un cambio de año)
 
     //Asignamos el primer año

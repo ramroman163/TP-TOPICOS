@@ -51,15 +51,6 @@ typedef struct{
     float promTrimCred;
 }tResulPromCont;
 
-typedef struct
-{
-    char codigo_pais[3];
-    char descripcion_pais[50];
-    float total_credito;
-    float total_debito;
-    int registros;
-}tPaisTotales;
-
 typedef struct{
     char codigoPais[3];
     char descripcionPais[50];

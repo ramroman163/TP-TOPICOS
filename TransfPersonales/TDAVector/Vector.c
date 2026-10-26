@@ -480,9 +480,9 @@ void reducirVector(Vector* v)
     v->cap = nCap;
 }
 
-void vectorCopiar(Vector* dest, const Vector* orig)
+int vectorCopiar(Vector* dest, const Vector* orig)
 {
-    if(!vectorCrear(dest, orig->tamElem));
+    if(!vectorCrear(dest, orig->tamElem))
         return SIN_MEM;
 
     dest->ce = orig->ce;
@@ -491,4 +491,6 @@ void vectorCopiar(Vector* dest, const Vector* orig)
     dest->vec = realloc(dest->vec, orig->cap * orig->tamElem);
 
     memcpy(dest->vec, orig->vec, orig->ce * orig->tamElem);
+
+    return TODO_OK;
 }

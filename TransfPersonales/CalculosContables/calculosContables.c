@@ -8,6 +8,7 @@
 #include "../Archivos/archivos.h"
 #include "../Utils/utils.h"
 #include "../TDAVector/Vector.h"
+#include "calculosContables.h"
 
 int acumularDatosAnuales(const Vector *transferencias, Vector* anios);
 void calcularSaldosYVariaciones(Vector* anios);
@@ -42,7 +43,7 @@ int generarArchivoIntermedio(const char *path_intermedio, const char *path_conti
     if(p_intermedio == NULL)
     {
         printf("Error: no se pudo abrir %s\n", path_intermedio);
-        return;
+        return ACCESO_ARCH_FALLIDO;
     }
 
     fprintf(p_intermedio, "ANIO;TRIMESTRE;PAIS_COD;PAIS_DESC;CONTINENTE;OPERACION;MONTO\n");
@@ -83,6 +84,8 @@ int generarArchivoIntermedio(const char *path_intermedio, const char *path_conti
 
     fclose(p_intermedio);
     vectorDestruir(&continentes);
+
+    return TODO_OK;
 }
 
 // Punto 2
@@ -93,7 +96,7 @@ int totalesPorContinente(const char *path_intermedio)
     if(p_intermedio == NULL)
     {
         printf("Error: no se pudo abrir %s\n", path_intermedio);
-        return;
+        return ACCESO_ARCH_FALLIDO;
     }
 
     Vector clasificaciones;
@@ -158,6 +161,8 @@ int totalesPorContinente(const char *path_intermedio)
     vectorMostrar(&clasificaciones, printClasificacion);
 
     vectorDestruir(&clasificaciones);
+    
+    return TODO_OK;
 }
 
 // Punto 1
@@ -247,7 +252,7 @@ int totalesPorPais(const Vector *vTransferencias)
 
     Vector vResumen; //para  guardar la nueva estructura en un vector
 
-    if(!vectorCrear(&vResumen, sizeof(tTotalOperaciones)));
+    if(!vectorCrear(&vResumen, sizeof(tTotalOperaciones)))
         return SIN_MEM;
 
     //hago corte de control
@@ -400,7 +405,7 @@ void saldoTrimestralPorPais(const Vector* transferencias)
 }
 
 // Punto 5
-void rankingPaises(const Vector *transferencias)
+int rankingPaises(const Vector *transferencias)
 {
     Vector paises;
     tTotalOperaciones paisAux;
@@ -432,7 +437,7 @@ void rankingPaises(const Vector *transferencias)
     } while (operacion != 'C' && operacion != 'D');
 
 
-    if(!vectorCrear(&paises, sizeof(tTotalOperaciones)));
+    if(!vectorCrear(&paises, sizeof(tTotalOperaciones)))
         return SIN_MEM;
 
     for (i = 0; i < cantidadElem; i++) //Acumulo registros por pais
@@ -471,7 +476,7 @@ void rankingPaises(const Vector *transferencias)
     {
         printf("No se encontraron registros de paises para procesar.\n");
         vectorDestruir(&paises);
-        return;
+        return SIN_DATOS;
     }
 
     printf("\n=============================================================================\n");
@@ -544,8 +549,6 @@ int promedioTrimestralPorPais(const char *path_intermedio)
     tIntermedio actObjInt;
     tResulProm miObjResul;
     char codPais[3];
-
-    size_t tamInter = sizeof(tIntermedio);
 
     tIntermedio* i = vectorGetElementoDePos(&miVecInter, 0);
     tIntermedio* ult = vectorGetElementoDePos(&miVecInter, (int)vectorCE(&miVecInter) - 1);
@@ -639,7 +642,7 @@ int promedioTrimestralPorPais(const char *path_intermedio)
 // Punto 9
 void mostrarResulPromTrimCont(const Vector* miVecResul, Print printResulTrimCont)
 {
-    print("\nANIO | CONTINENTE | PROM CRED | PROM DEB\n");
+    printf("\nANIO | CONTINENTE | PROM CRED | PROM DEB\n");
     vectorMostrar(miVecResul, printResulTrimCont);
 }
 
@@ -765,7 +768,6 @@ int promedioTrimestralPorContinente(const char *path_intermedio)
 // Punto 4
 int acumularDatosAnuales(const Vector *transferencias, Vector* anios)
 {
-    int totalElementos = vectorCantidad(transferencias); //obtiene los registros cargados
     int codRet;
 
     tPersonales* i = vectorGetElementoDePos(transferencias, 0);
@@ -819,7 +821,7 @@ void calcularSaldosYVariaciones(Vector* anios)
     
     while(i <= ult)
     {
-        tAnioResumen* aux = i - 1;
+        aux = i - 1;
         
         if (aux->saldo != 0.0) //si el saldo previo es distinto de 0
         {
@@ -829,6 +831,8 @@ void calcularSaldosYVariaciones(Vector* anios)
         {
             i->variacion = 0.0;
         }
+
+        i++;
     }
 }
 // --- Función principal del Punto 4 que coordina todo y muestra los resultados ---
@@ -854,13 +858,14 @@ int totalesAnualesVariacion(const Vector *transferencias)
     {
         return codRet;
     }
-
+    
     // 3 y 4. Calculamos saldos y variaciones interanuales
     calcularSaldosYVariaciones(&anios);
-
     // Mostramos la tabla por pantalla con el formato correspondiente
 
     mostrarTotalesAnualesVariacion(&anios, printTotalesAnualesVariacion);
+
+    return TODO_OK;
 }
 
 void mostrarTotalesAnualesVariacion(const Vector* anios, Print printTotalesAnualesVariacion)

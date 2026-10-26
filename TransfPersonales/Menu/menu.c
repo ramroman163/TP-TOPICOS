@@ -63,7 +63,8 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
             case 5:
                 rankingPaises(transferencias); break;
             case 6:
-                participacionPorContinente(); break;
+                //participacionPorContinente(); 
+                break;
             case 7:
                 generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias); break;
             case 8:

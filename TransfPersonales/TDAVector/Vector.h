@@ -38,14 +38,14 @@ int vectorOrdBuscar(const Vector* v, const void* elem, Cmp cmp);
 int vectorOrdBuscarRecursiva(const Vector* v, void* elem, Cmp cmp);
 int vectorDesordBuscar(const Vector* v, const void* elem, Cmp cmp);
 size_t vectorCE(const Vector* v);
-bool vectorOrdEliminar(Vector* v, void* elem, Cmp cmp); // realloc
-bool vectorDesordEliminar(Vector* v, void* elem, Cmp cmp); // realloc
+bool vectorOrdEliminar(Vector* v, const void* elem, Cmp cmp); // realloc
+bool vectorDesordEliminar(Vector* v, const void* elem, Cmp cmp); // realloc
 bool vectorEliminarDePos(Vector* v, int pos); // realloc
 void vectorOrdenar(Vector* v, int metodo, Cmp cmp);
 void vectorMostrar(const Vector* v, Print print);
 void* vectorGetElementoDePos(const Vector *v, int pos);
 void vectorVaciar(Vector* v); // realloc
 void vectorDestruir(Vector* v); // free
-void vectorCopiar(Vector* dest, const Vector* orig);
+int vectorCopiar(Vector* dest, const Vector* orig);
 
 #endif // VECTOR_H_INCLUDED

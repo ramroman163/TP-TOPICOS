@@ -7,5 +7,6 @@
 #define POS_INV 3
 #define SIN_MEM 4
 #define SIN_DATOS 5
+#define ACCESO_ARCH_FALLIDO 6
 
 #endif

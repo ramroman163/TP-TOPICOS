@@ -163,21 +163,21 @@ int compararContinenteAnio(const void* a, const void* b)
 int compararCodigoPaisTotales(const void *a, const void *b)
 {
     const tPersonales *transf = (const tPersonales *)a;
-    const tPaisTotales *pais = (const tPaisTotales *)b;
+    const tTotalOperaciones *pais = (const tTotalOperaciones *)b;
 
-    return strcmpi(transf->codigo_pais, pais->codigo_pais);
+    return strcmpi(transf->codigo_pais, pais->codigoPais);
 
 }
 
 int compararCreditoPaisDesc(const void *a, const void *b)
 {
-    const tPaisTotales *pais_a = (const tPaisTotales *)a;
-    const tPaisTotales *pais_b = (const tPaisTotales *)b;
+    const tTotalOperaciones *pais_a = (const tTotalOperaciones *)a;
+    const tTotalOperaciones *pais_b = (const tTotalOperaciones *)b;
 
-    if (pais_b->total_credito > pais_a->total_credito)
+    if (pais_b->totalCreditos > pais_a->totalCreditos)
         return 1;
 
-    if (pais_b->total_credito < pais_a->total_credito)
+    if (pais_b->totalCreditos < pais_a->totalCreditos)
         return -1;
 
     return 0;
@@ -185,13 +185,13 @@ int compararCreditoPaisDesc(const void *a, const void *b)
 
 int compararDebitoPaisDesc(const void *a, const void *b)
 {
-    const tPaisTotales *pais_a = (const tPaisTotales *)a;
-    const tPaisTotales *pais_b = (const tPaisTotales *)b;
+    const tTotalOperaciones *pais_a = (const tTotalOperaciones *)a;
+    const tTotalOperaciones *pais_b = (const tTotalOperaciones *)b;
 
-    if (pais_b->total_debito > pais_a->total_debito)
+    if (pais_b->totalDebitos > pais_a->totalDebitos)
         return 1;
 
-   if (pais_b->total_debito < pais_a->total_debito)
+   if (pais_b->totalDebitos < pais_a->totalDebitos)
         return -1;
 
    return 0;
@@ -206,18 +206,6 @@ int compararTransferenciasChar(const void* a, const void* b)
     return strcmpi(op1->codigo_pais, op2->codigo_pais);
 }
 
-int compararOperacionesFloat(const void* a, const void* b)
-{
-    const tTotalOperaciones* op1 = (const tTotalOperaciones*)a;
-    const tTotalOperaciones* op2 = (const tTotalOperaciones*)b;
-
-    if (op2->totalCreditos > op1->totalCreditos)
-        return 1;
-    if (op2->totalCreditos < op1->totalCreditos)
-        return -1;
-    
-    return 0;
-}
 void printResumen(const void *e)
 {
     const tTotalOperaciones* resumen = (tTotalOperaciones*)e;
@@ -230,4 +218,18 @@ void printResulTrimCont(const void *e)
     const tResulPromCont* resul = (tResulPromCont*)e;
 
     printf("%4d | %-30s | %.2f | %.2f\n", resul->anio, resul->continente, resul->promTrimCred, resul->promTrimDeb);
+}
+
+void printTotalesAnualesVariacion(const void *e)
+{
+    const tAnioResumen* resul = (tAnioResumen*)e;
+    
+    if(resul->variacion == 0.0)
+    {
+        printf("%-6d | %12.2f | %12.2f | %12.2f | NA\n", resul->anio, resul->totalCredito, resul->totalDebito, resul->saldo);
+    }
+    else
+    {
+        printf("%-6d | %12.2f | %12.2f | %12.2f | %15.2f\n", resul->anio, resul->totalCredito, resul->totalDebito, resul->saldo, resul->variacion);
+    }
 }

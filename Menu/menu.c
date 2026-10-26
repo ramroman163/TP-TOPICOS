@@ -47,7 +47,7 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
         switch (opcion)
         {
             case 1:
-                totalesPorPais(); break;
+                totalesPorPais(transferencias); break;
             case 2:
                 bool existe = verificarExistenciaArchivoIntermedio(pathIntermedio);
 
@@ -58,7 +58,7 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
             case 3:
                 saldoTrimestralPorPais(transferencias); break;
             case 4:
-                totalesAnualesVariacion(); break;
+                totalesAnualesVariacion(transferencias); break;
             case 5:
                 rankingPaises(transferencias); break;
             case 6:
@@ -73,9 +73,9 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
                 {
                     generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias);
                 }
-                //promedioTrimestralPorPais(); break;
+                promedioTrimestralPorPais(pathIntermedio); break;
             case 9:
-                promedioTrimestralPorContinente(); break;
+                promedioTrimestralPorContinente(pathIntermedio); break;
             case 10:
                 printf("Hasta luego.\n"); break;
             default:

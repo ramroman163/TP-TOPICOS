@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "utils.h"
-#include "Tipos/tipos.h"
+#include "../Tipos/tipos.h"
 
 int ingresarEntero(char *mensaje)
 {

@@ -175,8 +175,10 @@ int contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResumen
 {
     int cantidadElem = (int)vectorCE(vTransfercias);
 
-    // tPersonales* i = (tPersonales*) vTransfercias->vec; para no romper encapsulamiento
-    //tPersonales* ult = (tPersonales*) vTransfercias->vec + (vTransfercias->ce - 1);
+    if(cantidadElem == 0)
+    {
+        return SIN_DATOS;
+    }
 
     tPersonales* i = vectorGetElementoDePos(vTransfercias, 0);
     tPersonales* ult = vectorGetElementoDePos(vTransfercias, cantidadElem - 1);
@@ -451,16 +453,16 @@ void rankingPaises(const Vector *transferencias)
             if(codRet != TODO_OK)
                 return codRet;
         }
-            else
-            {
-                tTotalOperaciones *paisExistente = vectorGetElementoDePos(&paises, pos);
-                paisExistente->cantidadRegistros++;
+        else
+        {
+            tTotalOperaciones *paisExistente = vectorGetElementoDePos(&paises, pos);
+            paisExistente->cantidadRegistros++;
 
-                if (t->operacion == 'C')
-                    paisExistente->totalCreditos += t->monto;
-                else if (t->operacion == 'D')
-                    paisExistente->totalDebitos += t->monto;
-            }
+            if (t->operacion == 'C')
+                paisExistente->totalCreditos += t->monto;
+            else if (t->operacion == 'D')
+                paisExistente->totalDebitos += t->monto;
+        }
     }
 
     totalPaises = vectorCE(&paises);
@@ -478,18 +480,18 @@ void rankingPaises(const Vector *transferencias)
 
     n = ingresarEnteroRango(1, (int)totalPaises, "Ingrese la cantidad N de paises a listar:");
 
-        //Comienzo a ordenar
+    //Comienzo a ordenar
     if (operacion == 'C')
         vectorOrdenar(&paises, INSERCION, compararCreditoPaisDesc);
     else
         vectorOrdenar(&paises, INSERCION, compararDebitoPaisDesc);
 
 
-        printf("\n%-10s | %-25s | %-10s | %-15s | %-15s\n", "PAIS_COD", "PAIS_DESC", "registros", "total_credito", "total_debito");
+    printf("\n%-10s | %-25s | %-10s | %-15s | %-15s\n", "PAIS_COD", "PAIS_DESC", "registros", "total_credito", "total_debito");
 
-        for(i=0; i < (size_t)n; i++)
-        {
-            const tTotalOperaciones *pais = vectorGetElementoDePos(&paises, i);
+    for(i=0; i < (size_t)n; i++)
+    {
+        const tTotalOperaciones *pais = vectorGetElementoDePos(&paises, i);
 
         printf("%-10s | %-25s | %10d | %15.2f | %15.2f\n", pais->codigoPais, pais->descripcionPais, pais->cantidadRegistros, pais->totalCreditos, pais->totalDebitos);
     }
@@ -500,6 +502,12 @@ void rankingPaises(const Vector *transferencias)
 }
 
 // Punto 8
+void mostrarResulPromTrimPais(const Vector* miVecResul, Print printResulTrim)
+{
+    printf("COD_PAIS - NOMBRE_PAIS - TIPO OPERACION - CANT TRIMESTRES - PROMEDIO\n");
+    vectorMostrar(miVecResul, printResulTrim);
+}
+
 int promedioTrimestralPorPais(const char *path_intermedio)
 {
     Vector miVecInter;
@@ -627,13 +635,14 @@ int promedioTrimestralPorPais(const char *path_intermedio)
     return TODO_OK;
 }
 
-void mostrarResulPromTrimPais(const Vector* miVecResul, Print printResulTrim)
-{
-    printf("COD_PAIS - NOMBRE_PAIS - TIPO OPERACION - CANT TRIMESTRES - PROMEDIO\n");
-    vectorMostrar(miVecResul, printResulTrim);
-}
 
 // Punto 9
+void mostrarResulPromTrimCont(const Vector* miVecResul, Print printResulTrimCont)
+{
+    print("\nANIO | CONTINENTE | PROM CRED | PROM DEB\n");
+    vectorMostrar(miVecResul, printResulTrimCont);
+}
+
 int promedioTrimestralPorContinente(const char *path_intermedio)
 {
     Vector miVecInter;
@@ -751,12 +760,6 @@ int promedioTrimestralPorContinente(const char *path_intermedio)
     vectorDestruir(&miVecResul);
 
     return TODO_OK;
-}
-
-void mostrarResulPromTrimCont(const Vector* miVecResul, Print printResulTrimCont)
-{
-    print("\nANIO | CONTINENTE | PROM CRED | PROM DEB\n");
-    vectorMostrar(miVecResul, printResulTrimCont);
 }
 
 // Punto 4

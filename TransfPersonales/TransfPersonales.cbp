@@ -31,28 +31,6 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="Archivos/archivos.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="Archivos/archivos.h" />
-		<Unit filename="CalculosContables/calculosContables.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="CalculosContables/calculosContables.h" />
-		<Unit filename="Menu/menu.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="Menu/menu.h" />
-		<Unit filename="TDAVector/Vector.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="TDAVector/Vector.h" />
-		<Unit filename="Tipos/tipos.h" />
-		<Unit filename="Utils/CodigosRetorno.h" />
-		<Unit filename="Utils/utils.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="Utils/utils.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

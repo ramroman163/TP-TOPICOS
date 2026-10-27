@@ -127,12 +127,12 @@ int compararPromCredTrimPais(const void* a, const void* b)
 
     if(resulA->promCredito > resulB->promCredito)
     {
-        return -1;
+        return 1;
     }
 
     if(resulA->promCredito < resulB->promCredito)
     {
-        return 1;
+        return -1;
     }
 
     return 0;

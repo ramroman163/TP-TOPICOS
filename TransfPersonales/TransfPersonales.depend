@@ -11,7 +11,7 @@
 
 1793032330 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\utils\codigosretorno.h
 
-1793069445 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\main.c
+1793032056 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\main.c
 	<stdio.h>
 	<stdlib.h>
 	"Menu/menu.h"
@@ -20,18 +20,18 @@
 	"Utils/utils.h"
 	"TDAVector/Vector.h"
 
-1793069445 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\menu\menu.h
+1793031871 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\menu\menu.h
 	"../Tipos/tipos.h"
-	"../TDAVector/Vector.h"
+	"../TDAVector/vector.h"
 
-1793102621 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\tipos\tipos.h
+1793031669 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\tipos\tipos.h
 
 1792970278 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\archivos\archivos.h
 	<stdio.h>
 	<stdlib.h>
 	"../TDAVector/Vector.h"
 
-1793102621 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\utils\utils.h
+1793031669 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\utils\utils.h
 
 1793033329 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\menu\menu.c
 	<stdio.h>
@@ -40,17 +40,17 @@
 	"../Utils/utils.h"
 	"../CalculosContables/calculosContables.h"
 
-1793070079 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\calculoscontables\calculoscontables.h
+1793033290 c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\calculoscontables\calculoscontables.h
 	"../TDAVector/Vector.h"
 	"../Tipos/tipos.h"
 
-1793103447 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\utils\utils.c
+1793031871 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\utils\utils.c
 	<stdio.h>
 	<string.h>
 	"utils.h"
 	"../Tipos/tipos.h"
 
-1793103324 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\calculoscontables\calculoscontables.c
+1793033661 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\calculoscontables\calculoscontables.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -62,7 +62,7 @@
 	"../TDAVector/Vector.h"
 	"calculosContables.h"
 
-1793103082 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\tdavector\vector.c
+1793033067 source:c:\users\roman\desktop\facultad\tópicos de programación\test_tp\tp-topicos\transfpersonales\tdavector\vector.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>

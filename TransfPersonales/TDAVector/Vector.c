@@ -476,7 +476,7 @@ void reducirVector(Vector* v)
     }
 
     v->vec = realloc(v->vec, nCap * v->tamElem);
-    
+
     v->cap = nCap;
 }
 

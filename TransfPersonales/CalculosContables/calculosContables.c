@@ -303,7 +303,7 @@ int filtrarTransferenciasAnio(const Vector* transferencias, Vector* vAnio, int a
     return TODO_OK;
 }
 
-void calcularSaldosTrimestrales(const Vector* vAnio)
+int calcularSaldosTrimestrales(const Vector* vAnio)
 {
     const tPersonales *i, *ult, *pais;
     size_t cantPaises = 0, fila = 0, j, k;
@@ -382,9 +382,10 @@ void calcularSaldosTrimestrales(const Vector* vAnio)
     fclose(arch);
     free(saldos);
     printf("Archivo generado: saldo_trimestral.txt\n");
+    return TODO_OK;
 }
 
-void saldoTrimestralPorPais(const Vector* transferencias)
+int saldoTrimestralPorPais(const Vector* transferencias)
 {
     int anio;
     int codRet;
@@ -414,6 +415,8 @@ void saldoTrimestralPorPais(const Vector* transferencias)
         calcularSaldosTrimestrales(&vAnio);
     }
     vectorDestruir(&vAnio);
+
+    return TODO_OK;
 }
 
 // Punto 5

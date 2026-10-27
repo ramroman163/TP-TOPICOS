@@ -246,10 +246,10 @@ int totalesPorPais(const Vector *vTransferencias)
     int codRet = vectorCopiar(&copiaTransferencias, vTransferencias);
 
     if(codRet != TODO_OK)
-        return codRet; 
+        return codRet;
 
     if(vectorCE(&copiaTransferencias) == 0)
-    {   
+    {
         vectorDestruir(&copiaTransferencias);
         return SIN_DATOS;
     }
@@ -262,7 +262,7 @@ int totalesPorPais(const Vector *vTransferencias)
     {
         vectorDestruir(&copiaTransferencias);
         return SIN_MEM;
-    }   
+    }
 
     //hago corte de control
     codRet = contaryCargarOperaciones(&copiaTransferencias, &vResumen);
@@ -271,7 +271,7 @@ int totalesPorPais(const Vector *vTransferencias)
     {
         vectorDestruir(&copiaTransferencias);
         vectorDestruir(&vResumen);
-        return codRet; 
+        return codRet;
     }
 
     ordenarTransferenciasxCredito(&vResumen);
@@ -627,15 +627,18 @@ int promedioTrimestralPorPais(const char *path_intermedio)
 
         miObjResul.cantTrimDeb = contTrimDeb;
 
-        codRet = vectorOrdInsertar(&miVecResul, &miObjResul, compararPromCredTrimPais);
+        codRet = vectorInsertarAlFinal(&miVecResul, &miObjResul);
 
         if(codRet != TODO_OK)
         {
+            puts("Error al insertar");
             vectorDestruir(&miVecInter);
             vectorDestruir(&miVecResul);
             return codRet;
         }
     }
+
+    vectorOrdenar(&miVecResul, FUSION, compararPromCredTrimPais);
 
     mostrarResulPromTrimPais(&miVecResul, printResulTrim);
 

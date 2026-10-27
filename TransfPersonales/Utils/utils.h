@@ -27,5 +27,5 @@ int compararCodigoPaisTotales(const void *a, const void *b); //Para saber si un 
 int compararCreditoPaisDesc(const void *a, const void *b); //Para ordenar de Mayor a Menor por credito
 int compararDebitoPaisDesc(const void *a, const void *b); //Para ordenar de Mayor a Menor por debito
 void printTotalesAnualesVariacion(const void *e);
-
+int compararPaisNombre(const void* a, const void* b);
 #endif // UTILS_H_INCLUDED

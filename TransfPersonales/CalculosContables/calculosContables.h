@@ -21,7 +21,6 @@ int promedioTrimestralPorContinente(const char *pathIntermedio);
 void mostrarResulPromTrimPais(const Vector* miVecResul, Print printResulPromTrim);
 void mostrarResulPromTrimCont(const Vector* miVecResul, Print printResulTrimCont);
 bool verificarExistenciaArchivoIntermedio(const char *pathIntermedio);
-int compararPaisNombre(const void* a, const void* b);
 void mostrarTotalesAnualesVariacion(const Vector* anios, Print printTotalesAnualesVariacion);
 
 #endif

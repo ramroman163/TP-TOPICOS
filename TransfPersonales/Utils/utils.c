@@ -93,7 +93,7 @@ int compararCodigoPais(const void *a, const void *b)
     const tPersonales *transferencia = (const tPersonales*)a;
     const tContinentes *continente = (const tContinentes*)b;
 
-    return strcmpi(transferencia->codigo_pais, continente->codigo_pais);
+    return strcmp(transferencia->codigo_pais, continente->codigo_pais);
 }
 
 int compararContinente(const void *a, const void *b)
@@ -101,7 +101,7 @@ int compararContinente(const void *a, const void *b)
     const tIntermedio *inter = (const tIntermedio*)a;
     const tClasificacion *clasif = (const tClasificacion*)b;
 
-    return strcmpi(inter->continente, clasif->continente);
+    return strcmp(inter->continente, clasif->continente);
 }
 
 int compararPaisIntermedio(const void *a, const void *b)
@@ -155,7 +155,7 @@ int compararContinenteAnio(const void* a, const void* b)
     {
         return -1;
     }
-    
+
     return strcmp(interA->continente, interB->continente);
 }
 
@@ -165,7 +165,7 @@ int compararCodigoPaisTotales(const void *a, const void *b)
     const tPersonales *transf = (const tPersonales *)a;
     const tTotalOperaciones *pais = (const tTotalOperaciones *)b;
 
-    return strcmpi(transf->codigo_pais, pais->codigoPais);
+    return strcmp(transf->codigo_pais, pais->codigoPais);
 
 }
 
@@ -203,13 +203,13 @@ int compararTransferenciasChar(const void* a, const void* b)
     const tPersonales* op1 = (const tPersonales*)a;
     const tPersonales* op2 = (const tPersonales*)b;
 
-    return strcmpi(op1->codigo_pais, op2->codigo_pais);
+    return strcmp(op1->codigo_pais, op2->codigo_pais);
 }
 
 void printResumen(const void *e)
 {
     const tTotalOperaciones* resumen = (tTotalOperaciones*)e;
-    printf("%-10s  %-30s  %-10d  %15.2f  %15.2f\n", resumen->codigoPais, resumen->descripcionPais, 
+    printf("%-10s  %-30s  %-10d  %15.2f  %15.2f\n", resumen->codigoPais, resumen->descripcionPais,
         resumen->cantidadRegistros, resumen->totalCreditos, resumen->totalDebitos);
 }
 
@@ -223,7 +223,7 @@ void printResulTrimCont(const void *e)
 void printTotalesAnualesVariacion(const void *e)
 {
     const tAnioResumen* resul = (tAnioResumen*)e;
-    
+
     if(resul->variacion == 0.0)
     {
         printf("%-6d | %12.2f | %12.2f | %12.2f | NA\n", resul->anio, resul->totalCredito, resul->totalDebito, resul->saldo);
@@ -232,4 +232,12 @@ void printTotalesAnualesVariacion(const void *e)
     {
         printf("%-6d | %12.2f | %12.2f | %12.2f | %15.2f\n", resul->anio, resul->totalCredito, resul->totalDebito, resul->saldo, resul->variacion);
     }
+}
+
+int compararPaisNombre(const void* a, const void* b)
+{
+    const tPersonales* p1 = (const tPersonales*) a;
+    const tPersonales* p2 = (const tPersonales*) b;
+   
+    return strcmp(p1->descripcion_pais, p2->descripcion_pais);
 }

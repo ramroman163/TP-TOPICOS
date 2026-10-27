@@ -4,21 +4,6 @@
 #include "../Utils/utils.h"
 #include "../CalculosContables/calculosContables.h"
 
-
-/*
-El menú deberá presentar, como mínimo, las siguientes opciones:
-1.	Totales por país.
-2.	Totales por continente.
-3.	Saldo trimestral por país.
-4.	Totales anuales y variación interanual.
-5.	Ranking de países.
-6.	Participación porcentual por continente.
-7.	Generación del archivo intermedio transferencias_base_larga.csv.
-8.	Promedio trimestral por país.
-9.	Promedio trimestral por continente, operación y año.
-10.	Salir.
-*/
-
 void mostrarOpciones()
 {
     printf("\nTRANSFERENCIAS PERSONALES\n");
@@ -38,6 +23,7 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
 {
 
     int opcion;
+    int codRet;
     bool existe;
 
     do
@@ -48,40 +34,58 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
         switch (opcion)
         {
             case 1:
-                totalesPorPais(transferencias); break;
+                codRet = totalesPorPais(transferencias); 
+                break;
             case 2:
                 existe = verificarExistenciaArchivoIntermedio(pathIntermedio);
 
                 if(existe == false)
-                    generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias);
+                {
+                    codRet = generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias);
 
-                totalesPorContinente(pathIntermedio); break;
+                }
+
+                codRet = totalesPorContinente(pathIntermedio); 
+                break;
             case 3:
-                saldoTrimestralPorPais(transferencias); break;
+                codRet = saldoTrimestralPorPais(transferencias); 
+                break;
             case 4:
-                totalesAnualesVariacion(transferencias); break;
+                codRet = totalesAnualesVariacion(transferencias); 
+                break;
             case 5:
-                rankingPaises(transferencias); break;
+                codRet = rankingPaises(transferencias); 
+                break;
             case 6:
                 //participacionPorContinente(); 
                 break;
             case 7:
-                generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias); break;
-            case 8:
+                codRet = generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias); 
 
+                break;
+            case 8:
                 existe = verificarExistenciaArchivoIntermedio(pathIntermedio);
 
                 if(!existe)
                 {
-                    generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias);
+                    codRet = generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias);
                 }
-                promedioTrimestralPorPais(pathIntermedio); break;
+                codRet = promedioTrimestralPorPais(pathIntermedio); 
+                break;
             case 9:
-                promedioTrimestralPorContinente(pathIntermedio); break;
+                codRet = promedioTrimestralPorContinente(pathIntermedio); 
+                break;
             case 10:
-                printf("Hasta luego.\n"); break;
+                printf("Hasta luego.\n"); 
+                break;
             default:
-                printf("Opcion invalida. Intente de nuevo.\n"); break;
+                printf("Opcion invalida. Intente de nuevo.\n"); 
+                break;
+        }
+
+        if(opcion >= 1 && opcion <= 9)
+        {
+            verificarCodRet(codRet);
         }
     } while (opcion != 10);
 }

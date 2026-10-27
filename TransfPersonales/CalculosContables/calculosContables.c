@@ -176,17 +176,17 @@ void ordenarTransferenciasxCredito(Vector* transferencias)
     vectorOrdenar(transferencias, FUSION, compararCreditoPaisDesc);
 }
 
-int contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResumen)
+int contaryCargarOperaciones(const Vector* vCopiaTransferencias, Vector* vTransfResumen)
 {
-    int cantidadElem = (int)vectorCE(vTransfercias);
+    int cantidadElem = (int)vectorCE(vCopiaTransferencias);
 
     if(cantidadElem == 0)
     {
         return SIN_DATOS;
     }
 
-    tPersonales* i = vectorGetElementoDePos(vTransfercias, 0);
-    tPersonales* ult = vectorGetElementoDePos(vTransfercias, cantidadElem - 1);
+    tPersonales* i = vectorGetElementoDePos(vCopiaTransferencias, 0);
+    tPersonales* ult = vectorGetElementoDePos(vCopiaTransferencias, cantidadElem - 1);
     tTotalOperaciones opResumen;
 
     while(i <= ult)
@@ -211,7 +211,7 @@ int contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResumen
 
             i++;
 
-        } while(i<=ult && strcmpi(codPaisActual, i->codigo_pais) == 0);
+        } while(i<=ult && strcmp(codPaisActual, i->codigo_pais) == 0);
 
         strcpy(opResumen.codigoPais, codPaisActual);
         strcpy(opResumen.descripcionPais, descPaisActual);
@@ -221,10 +221,12 @@ int contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResumen
 
         //guarda en pos 0 e incrementa ce en uno, una vez que encuentra otro país, cargo todo en la prox pos
 
-        int codRet = vectorInsertarEnPos(vTransfResumen, &opResumen, vTransfResumen->ce);
+        int codRet = vectorInsertarEnPos(vTransfResumen, &opResumen, vectorCE(vTransfResumen));
 
         if(codRet != TODO_OK)
+        {
             return codRet;
+        }
     }
 
     return TODO_OK;
@@ -241,10 +243,14 @@ int totalesPorPais(const Vector *vTransferencias)
 {
     Vector copiaTransferencias; //para no reordenar el vector principal
 
-    vectorCopiar(&copiaTransferencias, vTransferencias);
+    int codRet = vectorCopiar(&copiaTransferencias, vTransferencias);
+
+    if(codRet != TODO_OK)
+        return codRet; 
 
     if(vectorCE(&copiaTransferencias) == 0)
-    {
+    {   
+        vectorDestruir(&copiaTransferencias);
         return SIN_DATOS;
     }
 
@@ -253,10 +259,20 @@ int totalesPorPais(const Vector *vTransferencias)
     Vector vResumen; //para  guardar la nueva estructura en un vector
 
     if(!vectorCrear(&vResumen, sizeof(tTotalOperaciones)))
+    {
+        vectorDestruir(&copiaTransferencias);
         return SIN_MEM;
+    }   
 
     //hago corte de control
-    contaryCargarOperaciones(&copiaTransferencias, &vResumen);
+    codRet = contaryCargarOperaciones(&copiaTransferencias, &vResumen);
+
+    if(codRet != TODO_OK)
+    {
+        vectorDestruir(&copiaTransferencias);
+        vectorDestruir(&vResumen);
+        return codRet; 
+    }
 
     ordenarTransferenciasxCredito(&vResumen);
 
@@ -272,29 +288,19 @@ int totalesPorPais(const Vector *vTransferencias)
 // Filtro las transferencias del año ingresado
 int filtrarTransferenciasAnio(const Vector* transferencias, Vector* vAnio, int anio)
 {
-    const tPersonales* i = (const tPersonales*) transferencias->vec;
+    const tPersonales* i = vectorGetElementoDePos(transferencias, 0);
     size_t j;
 
-    for(j = 0; j < transferencias->ce; j++)
+    for(j = 0; j < (int)vectorCE(transferencias); j++)
     {
         if((i + j)->anio == anio)
         {
-            if(vectorInsertarAlFinal(vAnio, i + j) != TODO_OK)
-                return 0;
+            int codRet = vectorInsertarAlFinal(vAnio, i + j);
+            if(codRet != TODO_OK)
+                return codRet;
         }
     }
-    return 1;
-}
-
-int compararPaisNombre(const void* a, const void* b)
-{
-    const tPersonales* p1 = (const tPersonales*) a;
-    const tPersonales* p2 = (const tPersonales*) b;
-    int cmp = strcmp(p1->descripcion_pais, p2->descripcion_pais);
-
-    if(cmp != 0)
-        return cmp;
-    return strcmp(p1->codigo_pais, p2->codigo_pais);
+    return TODO_OK;
 }
 
 void calcularSaldosTrimestrales(const Vector* vAnio)
@@ -305,8 +311,8 @@ void calcularSaldosTrimestrales(const Vector* vAnio)
     float (*saldos)[4];
     FILE* arch;
 
-    i = (const tPersonales*) vAnio->vec;
-    ult = i + vAnio->ce;
+    i = (const tPersonales*) vectorGetElementoDePos(vAnio, 0);
+    ult = vectorGetElementoDePos(vAnio, (int)vectorCE(vAnio));
 
     while(i < ult)
     {
@@ -322,11 +328,12 @@ void calcularSaldosTrimestrales(const Vector* vAnio)
 
     //Una fila por pais y 4 columnas
     saldos = malloc(cantPaises * sizeof(*saldos));
+
     if(saldos == NULL)
     {
-        printf("Error al reservar memoria.\n");
-        return;
+        return SIN_MEM;
     }
+
     for(k = 0; k < cantPaises; k++)
         for(j = 0; j < 4; j++)
             *(*(saldos + k) + j) = 0;
@@ -335,12 +342,12 @@ void calcularSaldosTrimestrales(const Vector* vAnio)
     arch = fopen("saldo_trimestral.txt", "wt");
     if(arch == NULL)
     {
-        printf("Error al crear el archivo.\n");
         free(saldos);
-        return;
+        return ACCESO_ARCH_FALLIDO;
     }
+
     fprintf(arch, "%-30s %12s %12s %12s %12s\n", "PAIS", "T1", "T2", "T3", "T4");
-    i = (const tPersonales*) vAnio->vec;
+    i = vectorGetElementoDePos(vAnio, 0);
 
     //Calculo los saldos de cada pais
     while(i < ult)
@@ -380,22 +387,27 @@ void calcularSaldosTrimestrales(const Vector* vAnio)
 void saldoTrimestralPorPais(const Vector* transferencias)
 {
     int anio;
+    int codRet;
     Vector vAnio;
 
     anio = ingresarEnteroRango(2015, 2026, "Ingrese el anio: ");
 
     if(!vectorCrear(&vAnio, sizeof(tPersonales)))
-        return;
+    {
+        return SIN_MEM;
+    }
 
-    if(!filtrarTransferenciasAnio(transferencias, &vAnio, anio))
+    codRet = filtrarTransferenciasAnio(transferencias, &vAnio, anio);
+
+    if(codRet != TODO_OK)
     {
         printf("Error al guardar las transferencias.\n");
         vectorDestruir(&vAnio);
-        return;
+        return codRet;
     }
 
-    if(vAnio.ce == 0)
-        printf("No hay registros para ese anio.\n");
+    if((int)vectorCE(&vAnio) == 0)
+        return SIN_DATOS;
     else
     {
         vectorOrdenar(&vAnio, FUSION, compararPaisNombre);

@@ -68,3 +68,72 @@
 	<string.h>
 	"Vector.h"
 
+1793045579 source:/home/stefy/Escritorio/Facu2026-SegundoCuatri/TOPICOS/ClasesTopicosConLibrerias/TPtopicosRepo/TP-TOPICOS/TransfPersonales/Archivos/archivos.c
+	<stdio.h>
+	<stdlib.h>
+	"../TDAVector/Vector.h"
+
+1793045579 /home/stefy/Escritorio/Facu2026-SegundoCuatri/TOPICOS/ClasesTopicosConLibrerias/TPtopicosRepo/TP-TOPICOS/TransfPersonales/TDAVector/Vector.h
+	<stddef.h>
+	<stdbool.h>
+	"../Utils/CodigosRetorno.h"
+
+1793045579 /home/stefy/Escritorio/Facu2026-SegundoCuatri/TOPICOS/ClasesTopicosConLibrerias/TPtopicosRepo/TP-TOPICOS/TransfPersonales/Utils/CodigosRetorno.h
+
+1793046939 source:/home/stefy/Escritorio/Facu2026-SegundoCuatri/TOPICOS/ClasesTopicosConLibrerias/TPtopicosRepo/TP-TOPICOS/TransfPersonales/CalculosContables/calculosContables.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	<ctype.h>
+	"../Tipos/tipos.h"
+	"../Archivos/archivos.h"
+	"../Utils/utils.h"
+	"../TDAVector/Vector.h"
+	"calculosContables.h"
+
+1793045579 /home/stefy/Escritorio/Facu2026-SegundoCuatri/TOPICOS/ClasesTopicosConLibrerias/TPtopicosRepo/TP-TOPICOS/TransfPersonales/Tipos/tipos.h
+
+1793045579 /home/stefy/Escritorio/Facu2026-SegundoCuatri/TOPICOS/ClasesTopicosConLibrerias/TPtopicosRepo/TP-TOPICOS/TransfPersonales/Archivos/archivos.h
+	<stdio.h>
+	<stdlib.h>
+	"../TDAVector/Vector.h"
+
+1793045579 /home/stefy/Escritorio/Facu2026-SegundoCuatri/TOPICOS/ClasesTopicosConLibrerias/TPtopicosRepo/TP-TOPICOS/TransfPersonales/Utils/utils.h
+
+1793045579 /home/stefy/Escritorio/Facu2026-SegundoCuatri/TOPICOS/ClasesTopicosConLibrerias/TPtopicosRepo/TP-TOPICOS/TransfPersonales/CalculosContables/calculosContables.h
+	"../TDAVector/Vector.h"
+	"../Tipos/tipos.h"
+
+1793046618 source:/home/stefy/Escritorio/Facu2026-SegundoCuatri/TOPICOS/ClasesTopicosConLibrerias/TPtopicosRepo/TP-TOPICOS/TransfPersonales/main.c
+	<stdio.h>
+	<stdlib.h>
+	"Menu/menu.h"
+	"Tipos/tipos.h"
+	"Archivos/archivos.h"
+	"Utils/utils.h"
+	"TDAVector/Vector.h"
+
+1793047035 /home/stefy/Escritorio/Facu2026-SegundoCuatri/TOPICOS/ClasesTopicosConLibrerias/TPtopicosRepo/TP-TOPICOS/TransfPersonales/Menu/menu.h
+	"../Tipos/tipos.h"
+	"../TDAVector/Vector.h"
+
+1793045579 source:/home/stefy/Escritorio/Facu2026-SegundoCuatri/TOPICOS/ClasesTopicosConLibrerias/TPtopicosRepo/TP-TOPICOS/TransfPersonales/Menu/menu.c
+	<stdio.h>
+	<stdbool.h>
+	"menu.h"
+	"../Utils/utils.h"
+	"../CalculosContables/calculosContables.h"
+
+1793045579 source:/home/stefy/Escritorio/Facu2026-SegundoCuatri/TOPICOS/ClasesTopicosConLibrerias/TPtopicosRepo/TP-TOPICOS/TransfPersonales/TDAVector/Vector.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"Vector.h"
+
+1793047006 source:/home/stefy/Escritorio/Facu2026-SegundoCuatri/TOPICOS/ClasesTopicosConLibrerias/TPtopicosRepo/TP-TOPICOS/TransfPersonales/Utils/utils.c
+	<stdio.h>
+	<string.h>
+	"utils.h"
+	"../Tipos/tipos.h"
+

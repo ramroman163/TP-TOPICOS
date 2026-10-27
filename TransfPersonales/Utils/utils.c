@@ -2,6 +2,7 @@
 #include <string.h>
 #include "utils.h"
 #include "../Tipos/tipos.h"
+#include "CodigosRetorno.h"
 
 int ingresarEntero(char *mensaje)
 {
@@ -251,4 +252,40 @@ int compararPaisNombre(const void* a, const void* b)
     const tPersonales* p2 = (const tPersonales*) b;
    
     return strcmp(p1->descripcion_pais, p2->descripcion_pais);
+}
+
+void verificarCodRetInsertar(int cod)
+{
+    switch(cod)
+    {
+        case TODO_OK:
+            break;
+
+        case LLENO:
+            puts("Vector lleno, reintente la ejecucion.");
+            break;
+
+        case DUPLICADO:
+            puts("Elemento no insertado. Motivo: Duplicado.");
+            break;
+
+        case POS_INV:
+            puts("Elemento/s no insertado/s. Motivo: Posición inválida.");
+            break;
+
+        case SIN_MEM:
+            puts("Sin memoria, reintente la ejecucion.");
+            break;
+
+        case SIN_DATOS:
+            puts("Sin datos disponibles, reintente la ejecucion.");
+            break;
+
+        case ACCESO_ARCH_FALLIDO:
+            puts("Acceso fallido a archivo, reintente la ejecucion.");
+            break;
+
+        default:
+            printf("Código %d desconocido.\n", cod);
+    }
 }

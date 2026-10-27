@@ -29,4 +29,6 @@ int compararDebitoPaisDesc(const void *a, const void *b); //Para ordenar de Mayo
 void printTotalesAnualesVariacion(const void *e);
 int compararPaisNombre(const void* a, const void* b);
 int compararPromCredTrimPais(const void* a, const void* b);
+void verificarCodRet(int cod);
+
 #endif // UTILS_H_INCLUDED

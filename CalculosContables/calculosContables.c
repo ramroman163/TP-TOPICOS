@@ -236,11 +236,8 @@ int compararPaisNombre(const void* a, const void* b)
 {
     const tPersonales* p1 = (const tPersonales*) a;
     const tPersonales* p2 = (const tPersonales*) b;
-    int cmp = strcmp(p1->descripcion_pais, p2->descripcion_pais);
 
-    if(cmp != 0)
-        return cmp;
-    return strcmp(p1->codigo_pais, p2->codigo_pais);
+    return strcmp(p1->descripcion_pais, p2->descripcion_pais);
 }
 
 void calcularSaldosTrimestrales(const Vector* vAnio)
@@ -262,7 +259,7 @@ void calcularSaldosTrimestrales(const Vector* vAnio)
         do
         {
             i++;
-        } } while(i < ult && compararPaisNombre(pais, i) == 0);
+        }while(i < ult && compararPaisNombre(pais, i) == 0);
     }
 
     //Una fila por pais y 4 columnas
@@ -305,7 +302,7 @@ void calcularSaldosTrimestrales(const Vector* vAnio)
                 }
             }
             i++;
-        } } while(i < ult && compararPaisNombre(pais, i) == 0);
+        } while(i < ult && compararPaisNombre(pais, i) == 0);
 
         fprintf(arch, "%-30s", pais->descripcion_pais);
         for(j = 0; j < 4; j++)

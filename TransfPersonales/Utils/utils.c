@@ -120,12 +120,22 @@ int compararCreditoDesc(const void *a, const void *b)
     return clasif_b->total_credito - clasif_a->total_credito;
 }
 
-float compararPromTrim(const void* a, const void* b)
+int compararPromCredTrimPais(const void* a, const void* b)
 {
-    const tResulProm* resul_a = (const tResulProm*)a;
-    const tResulProm* resul_b = (const tResulProm*)b;
+    const tResulPromPais* resulA = (const tResulPromPais*)a;
+    const tResulPromPais* resulB = (const tResulPromPais*)b;
 
-    return resul_a->prom - resul_b->prom;
+    if(resulA->promCredito > resulB->promCredito)
+    {
+        return 1;
+    }
+
+    if(resulA->promCredito < resulB->promCredito)
+    {
+        return -1;
+    }
+
+    return 0;
 }
 
 void printClasificacion(const void *e)
@@ -137,8 +147,9 @@ void printClasificacion(const void *e)
 
 void printResulTrim(const void *e)
 {
-    const tResulProm* promTrim = (tResulProm*)e;
-    printf("%3s - %51s - %c - %d - %0.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, promTrim->operacion, promTrim->cantTrim, promTrim->prom);
+    const tResulPromPais* promTrim = (tResulPromPais*)e;
+    printf("%3s - %51s - %c - %d - %0.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, 'C', promTrim->cantTrimCred, promTrim->promCredito);
+    printf("%3s - %51s - %c - %d - %0.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, 'D', promTrim->cantTrimDeb, promTrim->promDebito);
 }
 
 int compararContinenteAnio(const void* a, const void* b)

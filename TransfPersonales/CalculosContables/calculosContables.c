@@ -536,7 +536,7 @@ int promedioTrimestralPorPais(const char *path_intermedio)
         return SIN_MEM;
     }
 
-    if(!vectorCrear(&miVecResul, sizeof(tResulProm)))
+    if(!vectorCrear(&miVecResul, sizeof(tResulPromPais)))
     {
         return SIN_MEM;
     }
@@ -560,7 +560,7 @@ int promedioTrimestralPorPais(const char *path_intermedio)
     int codRet;
 
     tIntermedio actObjInt;
-    tResulProm miObjResul;
+    tResulPromPais miObjResul;
     char codPais[3];
 
     tIntermedio* i = vectorGetElementoDePos(&miVecInter, 0);
@@ -603,45 +603,39 @@ int promedioTrimestralPorPais(const char *path_intermedio)
             }
         }
 
-        miObjResul.operacion = 'C';
+        // Cargamos promedios para un pais, en una sola fila
 
         if(contTrimCred == 0)
         {
-            miObjResul.prom = 0.0;
+            miObjResul.promCredito = 0.0;
         }
         else
         {
-            miObjResul.prom = (acumTrimCred) / contTrimCred;
+            miObjResul.promCredito = (acumTrimCred) / contTrimCred;
         }
 
-        miObjResul.cantTrim = contTrimCred;
-
-        vectorInsertarAlFinal(&miVecResul, &miObjResul);
-
-        miObjResul.operacion = 'D';
+        miObjResul.cantTrimCred = contTrimCred;
 
         if(contTrimDeb == 0)
         {
-            miObjResul.prom = 0.0;
+            miObjResul.promDebito = 0.0;
         }
         else
         {
-            miObjResul.prom = (acumTrimDeb) / contTrimDeb;
+            miObjResul.promDebito = (acumTrimDeb) / contTrimDeb;
         }
 
-        miObjResul.cantTrim = contTrimDeb;
+        miObjResul.cantTrimDeb = contTrimDeb;
 
-        codRet = vectorInsertarAlFinal(&miVecResul, &miObjResul);
+        codRet = vectorOrdInsertar(&miVecResul, &miObjResul, compararPromCredTrimPais);
 
         if(codRet != TODO_OK)
         {
             vectorDestruir(&miVecInter);
             vectorDestruir(&miVecResul);
-        return codRet;
+            return codRet;
         }
     }
-
-    // ordenamiento va aca
 
     mostrarResulPromTrimPais(&miVecResul, printResulTrim);
 

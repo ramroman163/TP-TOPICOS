@@ -38,10 +38,11 @@ typedef struct{
 typedef struct{
     char codigo_pais[3];
     char descripcion_pais[50];
-    char operacion;
-    int cantTrim;
-    float prom;
-}tResulProm;
+    int cantTrimDeb;
+    int cantTrimCred;
+    float promDebito;
+    float promCredito;
+}tResulPromPais;
 
 // Punto 9
 typedef struct{

@@ -627,7 +627,7 @@ int promedioTrimestralPorPais(const char *path_intermedio)
 
         miObjResul.cantTrimDeb = contTrimDeb;
 
-        codRet = vectorOrdInsertar(&miVecResul, &miObjResul, compararPromCredTrimPais);
+        codRet = vectorInsertarAlFinal(&miVecResul, &miObjResul);
 
         if(codRet != TODO_OK)
         {
@@ -636,6 +636,8 @@ int promedioTrimestralPorPais(const char *path_intermedio)
             return codRet;
         }
     }
+
+    vectorOrdenar(&miVecResul, FUSION, compararPromCredTrimPais);
 
     mostrarResulPromTrimPais(&miVecResul, printResulTrim);
 

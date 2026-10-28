@@ -108,6 +108,7 @@ int totalesPorContinente(const char *path_intermedio)
 
     if(!vectorCrear(&clasificaciones, sizeof(tClasificacion)))
     {
+        fclose(p_intermedio);
         return SIN_MEM;
     }
 
@@ -136,6 +137,7 @@ int totalesPorContinente(const char *path_intermedio)
 
             if(codRet != TODO_OK)
             {
+                fclose(p_intermedio);
                 vectorDestruir(&clasificaciones);
                 return codRet;
             }
@@ -873,4 +875,146 @@ void mostrarTotalesAnualesVariacion(const Vector* anios, Print printTotalesAnual
     printf("-----------------------------------------------------------------------\n");
 
     vectorMostrar(anios, printTotalesAnualesVariacion);
+}
+
+// Punto 6
+int participacionPorContinente(const char *pathIntermedio)
+{
+    FILE *pIntermedio = fopen(pathIntermedio, "rt");
+    
+    if(pIntermedio == NULL)
+    {
+        printf("Error: no se pudo abrir %s\n", pathIntermedio);
+        return ACCESO_ARCH_FALLIDO;
+    }
+
+    Vector partContinentesAcum; // vector resultante
+    float totalCred;
+    float totalDeb;
+    int codRet;
+
+    if(!vectorCrear(&partContinentesAcum, sizeof(tParticipacionContAcum))) 
+    {
+        fclose(pIntermedio);
+        return SIN_MEM;
+    }
+
+    char linea[256];
+    int pos;
+    tIntermedio objInter;
+    tParticipacionContAcum objPart;
+
+    fgets(linea, sizeof(linea), pIntermedio);
+
+    while(fgets(linea, sizeof(linea), pIntermedio) != NULL)
+    {
+        armaIntermedio(linea, &objInter);
+
+        pos = vectorDesordBuscar(&partContinentesAcum, &objInter, compararContinenteParticipacion);
+
+        if(pos == -1)
+        {
+            strcpy(objPart.continente, objInter.continente);
+            objPart.acumCred = 0;
+            objPart.acumDeb = 0;
+
+            if(objInter.operacion == 'C')
+                objPart.acumCred += objInter.monto;
+
+            if(objInter.operacion == 'D')
+                objPart.acumDeb += objInter.monto;
+
+            codRet = vectorInsertarAlFinal(&partContinentesAcum, &objPart);
+
+            if(codRet != TODO_OK)
+            {
+                vectorDestruir(&partContinentesAcum);
+                fclose(pIntermedio);
+                return codRet;
+            }
+        }
+        else
+        {
+            tParticipacionContAcum *partCont = vectorGetElementoDePos(&partContinentesAcum, pos);
+
+            if(objInter.operacion == 'C')
+            {
+                partCont->acumCred += objInter.monto;
+            }
+            if(objInter.operacion == 'D')
+            {
+                partCont->acumDeb += objInter.monto;
+            }
+        }
+
+        if(objInter.operacion == 'C')
+        {
+            totalCred += objInter.monto;
+        }
+
+        if(objInter.operacion == 'D')
+        {
+            totalDeb += objInter.monto;
+        }
+        
+    }
+
+    fclose(pIntermedio);
+
+    int cantElem = (int)vectorCE(&partContinentesAcum);
+
+    Vector partContinentesBin;
+
+    if(!vectorCrear(&partContinentesBin, sizeof(tParticipacionContBin))) 
+    {
+        vectorDestruir(&partContinentesAcum);
+        return SIN_MEM;
+    }
+
+    tParticipacionContAcum* miPartCont;
+    tParticipacionContBin partContFinal;
+
+    for(int i = 0; i < cantElem; i++)
+    {
+        miPartCont = vectorGetElementoDePos(&partContinentesAcum, i);
+        strcpy(partContFinal.continente, miPartCont->continente);
+        
+        if(miPartCont->acumCred != 0 && totalCred != 0)
+        {
+            partContFinal.porcPartCred = (miPartCont->acumCred / totalCred ) * 100; 
+        }
+        else
+        {
+            partContFinal.porcPartCred = 0.0;
+        }
+
+        if(miPartCont->acumDeb != 0 && totalDeb != 0)
+        {
+            partContFinal.porcPartDeb = (miPartCont->acumDeb / totalDeb ) * 100; 
+        }
+        else
+        {
+            partContFinal.porcPartDeb = 0.0;
+        }
+
+        codRet = vectorOrdInsertar(&partContinentesBin, &partContFinal, compararContinenteAlfa);
+
+        if(codRet != TODO_OK)
+        {
+            vectorDestruir(&partContinentesBin);
+            return codRet;
+        }
+    }
+
+    mostrarResulPartCont(&partContinentesBin, printPartCont);
+
+    exportar_vec_a_binario("participacion_continentes.dat", &partContinentesBin);
+    
+    return TODO_OK;
+}
+
+void mostrarResulPartCont(const Vector* partContinentesBin, Print printPartCont)
+{
+    printf("%-20s | %8s | %8s", "CONTINENTE", "CREDITO", "DEBITO");
+    vectorMostrar(partContinentesBin, printPartCont);
 }

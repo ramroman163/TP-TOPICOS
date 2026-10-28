@@ -17,6 +17,7 @@ int filtrarTransferenciasAnio(const Vector* transferencias, Vector* vAnio, int a
 int totalesAnualesVariacion(const Vector *transferencias);
 int rankingPaises(const Vector *transferencias);
 int participacionPorContinente(const char *pathIntermedio);
+void mostrarResulPartCont(const Vector* partContinentesBin, Print printPartCont);
 int generarArchivoIntermedio(const char *path_intermedio, const char *path_continentes, const Vector* transferencias);
 int promedioTrimestralPorPais(const char *pathIntermedio);
 int promedioTrimestralPorContinente(const char *pathIntermedio);

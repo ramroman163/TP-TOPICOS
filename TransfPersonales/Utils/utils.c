@@ -118,7 +118,13 @@ int compararCreditoDesc(const void *a, const void *b)
     const tClasificacion *clasif_a = (const tClasificacion*)a;
     const tClasificacion *clasif_b = (const tClasificacion*)b;
 
-    return clasif_b->total_credito - clasif_a->total_credito;
+    if (clasif_b->total_credito > clasif_a->total_credito)
+        return 1;
+
+    if (clasif_b->total_credito < clasif_a->total_credito)
+        return -1;
+
+    return 0;
 }
 
 int compararPromCredTrimPais(const void* a, const void* b)

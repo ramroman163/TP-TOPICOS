@@ -42,6 +42,7 @@ int generarArchivoIntermedio(const char *path_intermedio, const char *path_conti
 
     if(p_intermedio == NULL)
     {
+        vectorDestruir(&continentes);
         printf("Error: no se pudo abrir %s\n", path_intermedio);
         return ACCESO_ARCH_FALLIDO;
     }
@@ -52,6 +53,7 @@ int generarArchivoIntermedio(const char *path_intermedio, const char *path_conti
 
     if(cantidad == 0)
     {
+        vectorDestruir(&continentes);
         return SIN_DATOS;
     }
 
@@ -133,7 +135,10 @@ int totalesPorContinente(const char *path_intermedio)
             int codRet = vectorInsertarAlFinal(&clasificaciones, &clasif);
 
             if(codRet != TODO_OK)
+            {
+                vectorDestruir(&clasificaciones);
                 return codRet;
+            }
         }
         else
         {

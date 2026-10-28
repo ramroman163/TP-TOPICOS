@@ -1015,6 +1015,6 @@ int participacionPorContinente(const char *pathIntermedio)
 
 void mostrarResulPartCont(const Vector* partContinentesBin, Print printPartCont)
 {
-    printf("%-20s | %8s | %8s", "CONTINENTE", "CREDITO", "DEBITO");
+    printf("%-20s | %8s | %8s\n", "CONTINENTE", "CREDITO", "DEBITO");
     vectorMostrar(partContinentesBin, printPartCont);
 }

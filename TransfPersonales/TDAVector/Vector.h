@@ -44,6 +44,7 @@ bool vectorEliminarDePos(Vector* v, int pos); // realloc
 void vectorOrdenar(Vector* v, int metodo, Cmp cmp);
 void vectorMostrar(const Vector* v, Print print);
 void* vectorGetElementoDePos(const Vector *v, int pos);
+size_t vectorGetTamElem(const Vector *v);
 void vectorVaciar(Vector* v); // realloc
 void vectorDestruir(Vector* v); // free
 int vectorCopiar(Vector* dest, const Vector* orig);

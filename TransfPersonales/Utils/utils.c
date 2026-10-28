@@ -260,7 +260,7 @@ int compararPaisNombre(const void* a, const void* b)
     return strcmp(p1->descripcion_pais, p2->descripcion_pais);
 }
 
-void verificarCodRetInsertar(int cod)
+void verificarCodRet(int cod)
 {
     switch(cod)
     {

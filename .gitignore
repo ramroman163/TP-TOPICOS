@@ -1,1 +1,8 @@
-.vscode
+.vscode/
+bin/
+obj/
+*.o
+*.a
+*.exe
+*.depend
+*.layout

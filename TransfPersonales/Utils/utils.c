@@ -155,8 +155,8 @@ void printClasificacion(const void *e)
 void printResulTrim(const void *e)
 {
     const tResulPromPais* promTrim = (tResulPromPais*)e;
-    printf("%3s - %51s - %c - %d - %0.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, 'C', promTrim->cantTrimCred, promTrim->promCredito);
-    printf("%3s - %51s - %c - %d - %0.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, 'D', promTrim->cantTrimDeb, promTrim->promDebito);
+    printf("%-10s  %-25s  %3c  %8d  %15.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, 'C', promTrim->cantTrimCred, promTrim->promCredito);
+    printf("%-10s  %-25s  %3c  %8d  %15.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, 'D', promTrim->cantTrimDeb, promTrim->promDebito);
 }
 
 int compararContinenteAnio(const void* a, const void* b)

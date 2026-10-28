@@ -251,10 +251,10 @@ int totalesPorPais(const Vector *vTransferencias)
     int codRet = vectorCopiar(&copiaTransferencias, vTransferencias);
 
     if(codRet != TODO_OK)
-        return codRet; 
+        return codRet;
 
     if(vectorCE(&copiaTransferencias) == 0)
-    {   
+    {
         vectorDestruir(&copiaTransferencias);
         return SIN_DATOS;
     }
@@ -267,7 +267,7 @@ int totalesPorPais(const Vector *vTransferencias)
     {
         vectorDestruir(&copiaTransferencias);
         return SIN_MEM;
-    }   
+    }
 
     //hago corte de control
     codRet = contaryCargarOperaciones(&copiaTransferencias, &vResumen);
@@ -276,7 +276,7 @@ int totalesPorPais(const Vector *vTransferencias)
     {
         vectorDestruir(&copiaTransferencias);
         vectorDestruir(&vResumen);
-        return codRet; 
+        return codRet;
     }
 
     ordenarTransferenciasxCredito(&vResumen);
@@ -527,7 +527,7 @@ int rankingPaises(const Vector *transferencias)
 // Punto 8
 void mostrarResulPromTrimPais(const Vector* miVecResul, Print printResulTrim)
 {
-    printf("COD_PAIS - NOMBRE_PAIS - TIPO OPERACION - CANT TRIMESTRES - PROMEDIO\n");
+    printf("\n%-10s  %-25s  %3s  %8s  %12s\n", "COD_PAIS", "DESC_PAIS", "OPERACION", "CANT_TRIM", "PROMEDIO");
     vectorMostrar(miVecResul, printResulTrim);
 }
 
@@ -564,48 +564,40 @@ int promedioTrimestralPorPais(const char *path_intermedio)
     float acumTrimCred;
     int codRet;
 
-    tIntermedio actObjInt;
     tResulPromPais miObjResul;
     char codPais[3];
 
     tIntermedio* i = vectorGetElementoDePos(&miVecInter, 0);
     tIntermedio* ult = vectorGetElementoDePos(&miVecInter, (int)vectorCE(&miVecInter) - 1);
 
-    actObjInt = *i;
-
     while(i <= ult)
     {
-        strcpy(codPais, actObjInt.codigo_pais);
+        strcpy(codPais, i->codigo_pais);
 
         contTrimDeb = contTrimCred = 0;
         acumTrimDeb = acumTrimCred = 0.0;
 
-        strcpy(miObjResul.codigo_pais, actObjInt.codigo_pais);
-        strcpy(miObjResul.descripcion_pais, actObjInt.descripcion_pais);
+        strcpy(miObjResul.codigo_pais, i->codigo_pais);
+        strcpy(miObjResul.descripcion_pais, i->descripcion_pais);
 
-        while(i <= ult && strcmp(actObjInt.codigo_pais, codPais) == 0)
+        while(i <= ult && strcmp(i->codigo_pais, codPais) == 0)
         {
-            if(actObjInt.monto > 0)
+            if(i->monto > 0)
             {
-                if(actObjInt.operacion == 'C')
+                if(i->operacion == 'C')
                 {
                     contTrimCred++;
-                    acumTrimCred += actObjInt.monto;
+                    acumTrimCred += i->monto;
                 }
                 else
                 {
                     contTrimDeb++;
-                    acumTrimDeb += actObjInt.monto;
+                    acumTrimDeb += i->monto;
                 }
 
             }
 
             i++;
-
-            if(i <= ult)
-            {
-                actObjInt = *i;
-            }
         }
 
         // Cargamos promedios para un pais, en una sola fila
@@ -656,7 +648,7 @@ int promedioTrimestralPorPais(const char *path_intermedio)
 // Punto 9
 void mostrarResulPromTrimCont(const Vector* miVecResul, Print printResulTrimCont)
 {
-    printf("\nANIO | CONTINENTE | PROM CRED | PROM DEB\n");
+    printf("\n%-10s  %-25s  %3s  %8s\n", "ANIO", "CONTINENTE", "PROM CRED", "PROM DEB");
     vectorMostrar(miVecResul, printResulTrimCont);
 }
 
@@ -694,7 +686,6 @@ int promedioTrimestralPorContinente(const char *path_intermedio)
     float acumTrimCred;
     int codRet;
 
-    tIntermedio miObjAct;
     tResulPromCont miObjResul;
     char continenteAct[20];
     int anioAct;
@@ -702,41 +693,35 @@ int promedioTrimestralPorContinente(const char *path_intermedio)
     tIntermedio* i =  vectorGetElementoDePos(&miVecInter, 0);
     tIntermedio* ult = vectorGetElementoDePos(&miVecInter, (int)vectorCE(&miVecInter) - 1);
 
-    miObjAct = *i;
 
     while(i <= ult)
     {
-        anioAct = miObjAct.anio; // info de comparacion
+        anioAct = i->anio; // info de comparacion
 
-        while(i <= ult && anioAct == miObjAct.anio)
+        while(i <= ult && anioAct == i->anio)
         {
-            strcpy(continenteAct, miObjAct.continente); // info de comparacion
+            strcpy(continenteAct, i->continente); // info de comparacion
 
             contTrimDeb = contTrimCred = 0;
             acumTrimDeb = acumTrimCred = 0.0;
 
-            while(i <= ult && strcmp(continenteAct, miObjAct.continente) == 0 && anioAct == miObjAct.anio)
+            while(i <= ult && strcmp(continenteAct, i->continente) == 0 && anioAct == i->anio)//para el caso en donde termine un mismo anio y siga otro con el mismo continente
             {
-                if(miObjAct.monto > 0)
+                if(i->monto > 0)
                 {
-                    if(miObjAct.operacion == 'C')
+                    if(i->operacion == 'C')
                     {
                         contTrimCred++;
-                        acumTrimCred += miObjAct.monto;
+                        acumTrimCred += i->monto;
                     }
                     else
                     {
                         contTrimDeb++;
-                        acumTrimDeb += miObjAct.monto;
+                        acumTrimDeb += i->monto;
                     }
                 }
 
                 i++;
-
-                if(i <= ult)
-                {
-                    miObjAct = *i;
-                }
             }
 
             strcpy(miObjResul.continente, continenteAct);

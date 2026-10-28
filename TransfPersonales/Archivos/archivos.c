@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../TDAVector/Vector.h"
+#include "../Archivos/archivos.h"
 
-void cargarArchivoEnVector(const char *path, Vector *v, void (*accion) (const char * registro, void * elemento))
+void cargarArchivoEnVector(const char *path, Vector *v, CargaStruct accion)
 {
     FILE *archivo;
     char linea[256];
-    void *elemento = malloc(v->tamElem);
+    size_t tamanio = vectorGetTamElem(v);
+    void *elemento = malloc(tamanio);
 
     if(!elemento)
     {
@@ -45,22 +47,11 @@ void exportar_vec_a_binario(const char *path, const Vector *v)
         return;
     }
 
-    fwrite(v->vec, v->tamElem, v->ce, pbin);
+    size_t tamanio = vectorGetTamElem(v);
+    size_t ce = vectorCE(v);
+    void *vector = vectorGetElementoDePos(v, 0);
+
+    fwrite(vector, tamanio, ce, pbin);
 
     fclose(pbin);
-}
-
-void exportar_vec_a_txt_var(const char *path, const Vector *v, void (*accion) (const Vector *v, FILE *p))
-{
-    FILE *ptxt = fopen(path, "wt");
-
-    if (!ptxt)
-    {
-        puts("Hubo un error reinicie el programa");
-        return;
-    }
-
-    accion(v, ptxt);
-
-    fclose(ptxt);
 }

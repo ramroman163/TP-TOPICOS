@@ -280,7 +280,7 @@ void printPartCont(const void *e)
 {
     const tParticipacionContBin* part = (tParticipacionContBin*)e;
 
-    printf("%-20s | %.2f | %.2f", part->continente, part->porcPartCred, part->porcPartDeb);
+    printf("%-20s | %.2f | %.2f\n", part->continente, part->porcPartCred, part->porcPartDeb);
 }
 
 void verificarCodRet(int cod)

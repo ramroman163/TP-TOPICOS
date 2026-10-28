@@ -432,6 +432,10 @@ void* vectorGetElementoDePos(const Vector *v, int pos)
     return elementoPos;
 }
 
+size_t vectorGetTamElem(const Vector *v)
+{
+    return v->tamElem;
+}
 
 void vectorVaciar(Vector* v)
 {

@@ -16,7 +16,7 @@ int calcularSaldosTrimestrales(const Vector* vAnio);
 int filtrarTransferenciasAnio(const Vector* transferencias, Vector* vAnio, int anio);
 int totalesAnualesVariacion(const Vector *transferencias);
 int rankingPaises(const Vector *transferencias);
-void participacionPorContinente();
+int participacionPorContinente(const char *pathIntermedio);
 int generarArchivoIntermedio(const char *path_intermedio, const char *path_continentes, const Vector* transferencias);
 int promedioTrimestralPorPais(const char *pathIntermedio);
 int promedioTrimestralPorContinente(const char *pathIntermedio);

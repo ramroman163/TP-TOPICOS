@@ -42,7 +42,6 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
                 if(existe == false)
                 {
                     codRet = generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias);
-
                 }
 
                 codRet = totalesPorContinente(pathIntermedio); 
@@ -57,11 +56,10 @@ void menuEjecutar(const char *pathIntermedio, const char *pathContinentes, const
                 codRet = rankingPaises(transferencias); 
                 break;
             case 6:
-                //participacionPorContinente(); 
+                codRet = participacionPorContinente(pathIntermedio); 
                 break;
             case 7:
                 codRet = generarArchivoIntermedio(pathIntermedio, pathContinentes, transferencias); 
-
                 break;
             case 8:
                 existe = verificarExistenciaArchivoIntermedio(pathIntermedio);

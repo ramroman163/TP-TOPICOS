@@ -30,5 +30,8 @@ void printTotalesAnualesVariacion(const void *e);
 int compararPaisNombre(const void* a, const void* b);
 int compararPromCredTrimPais(const void* a, const void* b);
 void verificarCodRet(int cod);
+void printPartCont(const void *e);
+int compararContinenteParticipacion(const void *a, const void *b);
+int compararContinenteAlfa(const void* a, const void* b);
 
 #endif // UTILS_H_INCLUDED

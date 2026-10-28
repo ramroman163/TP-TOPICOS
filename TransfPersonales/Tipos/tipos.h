@@ -69,4 +69,16 @@ typedef struct {
     float variacion;
 } tAnioResumen;
 
+typedef struct {
+    char continente[20];
+    float acumCred;
+    float acumDeb;
+} tParticipacionContAcum;
+
+typedef struct {
+    char continente[20];
+    float porcPartCred;
+    float porcPartDeb;
+} tParticipacionContBin;
+
 #endif // TIPOS_H_INCLUDED

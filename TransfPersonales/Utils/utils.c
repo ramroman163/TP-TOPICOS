@@ -105,6 +105,22 @@ int compararContinente(const void *a, const void *b)
     return strcmp(inter->continente, clasif->continente);
 }
 
+int compararContinenteParticipacion(const void *a, const void *b)
+{
+    const tIntermedio *inter = (const tIntermedio*)a;
+    const tParticipacionContAcum *partCont = (const tParticipacionContAcum*)b;
+
+    return strcmp(inter->continente, partCont->continente);
+}
+
+int compararContinenteAlfa(const void* a, const void* b)
+{
+    const tParticipacionContBin *partContA = (const tParticipacionContBin*)a;
+    const tParticipacionContBin *partContB = (const tParticipacionContBin*)b;
+
+    return strcmp(partContA->continente, partContB->continente);
+}
+
 int compararPaisIntermedio(const void *a, const void *b)
 {
     const tIntermedio *interA = (const tIntermedio*)a;
@@ -258,6 +274,13 @@ int compararPaisNombre(const void* a, const void* b)
     const tPersonales* p2 = (const tPersonales*) b;
    
     return strcmp(p1->descripcion_pais, p2->descripcion_pais);
+}
+
+void printPartCont(const void *e)
+{
+    const tParticipacionContBin* part = (tParticipacionContBin*)e;
+
+    printf("%-20s | %.2f | %.2f", part->continente, part->porcPartCred, part->porcPartDeb);
 }
 
 void verificarCodRet(int cod)

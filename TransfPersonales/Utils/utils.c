@@ -164,7 +164,7 @@ int compararPromCredTrimPais(const void* a, const void* b)
 void printClasificacion(const void *e)
 {
     const tClasificacion* clasif = (tClasificacion*)e;
-    printf("%s - %d - %.2lf - %.2lf\n", clasif->continente, clasif->registros, clasif->total_credito,
+    printf("%-20s | %10d | %8.2lf | %8.2lf\n", clasif->continente, clasif->registros, clasif->total_credito,
            clasif->total_debito);
 }
 

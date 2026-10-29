@@ -163,7 +163,7 @@ int totalesPorContinente(const char *path_intermedio)
 
     vectorOrdenar(&clasificaciones, INSERCION, compararCreditoDesc);
 
-    printf("CONTINENTE - REGISTROS - TOTAL_CREDITO - TOTAL_DEBITO\n");
+    printf("%-20s | %10s | %8s | %8s\n\n", "CONTINENTE", "REGISTROS", "CREDITO", "DEBITO");
 
     vectorMostrar(&clasificaciones, printClasificacion);
 

@@ -36,7 +36,10 @@ int generarArchivoIntermedio(const char *path_intermedio, const char *path_conti
         return SIN_MEM;
     }
 
-    cargarArchivoEnVector(path_continentes, &continentes, armaContinentes);
+    int codRet = cargarArchivoEnVector(path_continentes, &continentes, armaContinentes);
+
+    if(codRet != TODO_OK)
+        return codRet;
 
     FILE *p_intermedio = fopen(path_intermedio, "wt");
 
@@ -548,7 +551,10 @@ int promedioTrimestralPorPais(const char *path_intermedio)
         return SIN_MEM;
     }
 
-    cargarArchivoEnVector(path_intermedio, &miVecInter, armaIntermedio);
+    int codRet = cargarArchivoEnVector(path_intermedio, &miVecInter, armaIntermedio);
+
+    if(codRet != TODO_OK)
+        return codRet;
 
     if(vectorCE(&miVecInter) == 0)
     {
@@ -564,7 +570,6 @@ int promedioTrimestralPorPais(const char *path_intermedio)
     int contTrimCred;
     float acumTrimDeb;
     float acumTrimCred;
-    int codRet;
 
     tResulPromPais miObjResul;
     char codPais[3];
@@ -670,7 +675,10 @@ int promedioTrimestralPorContinente(const char *path_intermedio)
         return SIN_MEM;
     }
 
-    cargarArchivoEnVector(path_intermedio, &miVecInter, armaIntermedio);
+    int codRet = cargarArchivoEnVector(path_intermedio, &miVecInter, armaIntermedio);
+
+    if(codRet != TODO_OK)
+        return codRet;
 
     if(vectorCE(&miVecInter) == 0)
     {
@@ -686,7 +694,6 @@ int promedioTrimestralPorContinente(const char *path_intermedio)
     int contTrimCred;
     float acumTrimDeb;
     float acumTrimCred;
-    int codRet;
 
     tResulPromCont miObjResul;
     char continenteAct[20];
@@ -881,7 +888,7 @@ void mostrarTotalesAnualesVariacion(const Vector* anios, Print printTotalesAnual
 int participacionPorContinente(const char *pathIntermedio)
 {
     FILE *pIntermedio = fopen(pathIntermedio, "rt");
-    
+
     if(pIntermedio == NULL)
     {
         printf("Error: no se pudo abrir %s\n", pathIntermedio);
@@ -889,11 +896,11 @@ int participacionPorContinente(const char *pathIntermedio)
     }
 
     Vector partContinentesAcum; // vector resultante
-    float totalCred;
-    float totalDeb;
+    float totalCred = 0;
+    float totalDeb = 0;
     int codRet;
 
-    if(!vectorCrear(&partContinentesAcum, sizeof(tParticipacionContAcum))) 
+    if(!vectorCrear(&partContinentesAcum, sizeof(tParticipacionContAcum)))
     {
         fclose(pIntermedio);
         return SIN_MEM;
@@ -956,7 +963,7 @@ int participacionPorContinente(const char *pathIntermedio)
         {
             totalDeb += objInter.monto;
         }
-        
+
     }
 
     fclose(pIntermedio);
@@ -965,7 +972,7 @@ int participacionPorContinente(const char *pathIntermedio)
 
     Vector partContinentesBin;
 
-    if(!vectorCrear(&partContinentesBin, sizeof(tParticipacionContBin))) 
+    if(!vectorCrear(&partContinentesBin, sizeof(tParticipacionContBin)))
     {
         vectorDestruir(&partContinentesAcum);
         return SIN_MEM;
@@ -978,10 +985,10 @@ int participacionPorContinente(const char *pathIntermedio)
     {
         miPartCont = vectorGetElementoDePos(&partContinentesAcum, i);
         strcpy(partContFinal.continente, miPartCont->continente);
-        
+
         if(miPartCont->acumCred != 0 && totalCred != 0)
         {
-            partContFinal.porcPartCred = (miPartCont->acumCred / totalCred ) * 100; 
+            partContFinal.porcPartCred = (miPartCont->acumCred / totalCred ) * 100;
         }
         else
         {
@@ -990,7 +997,7 @@ int participacionPorContinente(const char *pathIntermedio)
 
         if(miPartCont->acumDeb != 0 && totalDeb != 0)
         {
-            partContFinal.porcPartDeb = (miPartCont->acumDeb / totalDeb ) * 100; 
+            partContFinal.porcPartDeb = (miPartCont->acumDeb / totalDeb ) * 100;
         }
         else
         {
@@ -1009,7 +1016,7 @@ int participacionPorContinente(const char *pathIntermedio)
     mostrarResulPartCont(&partContinentesBin, printPartCont);
 
     exportar_vec_a_binario("participacion_continentes.dat", &partContinentesBin);
-    
+
     return TODO_OK;
 }
 

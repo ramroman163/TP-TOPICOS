@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include "../TDAVector/Vector.h"
 
-typedef void (*CargaStruct)(const char * registro, void * elemento);
+typedef int (*CargaStruct)(const char * registro, void * elemento);
 
-void cargarArchivoEnVector(const char *path, Vector *v, CargaStruct accion);
+int cargarArchivoEnVector(const char *path, Vector *v, CargaStruct accion);
 void exportar_vec_a_binario(const char *path, const Vector *v);
 
 #endif // ARCHIVOS_H_INCLUDED

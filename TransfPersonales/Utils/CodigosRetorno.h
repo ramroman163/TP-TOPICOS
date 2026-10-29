@@ -8,5 +8,7 @@
 #define SIN_MEM 4
 #define SIN_DATOS 5
 #define ACCESO_ARCH_FALLIDO 6
+#define LINEA_FALLADA 7
+#define ERROR_LINEA_LARGA 8
 
 #endif

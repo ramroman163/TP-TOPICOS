@@ -16,7 +16,15 @@ int main()
 
     vectorCrear(&transferenciasPersonales, sizeof(tPersonales));
 
-    cargarArchivoEnVector(PATH_TRANSFERENCIAS_CSV, &transferenciasPersonales, armaTransfPersonales);
+    int codRet = cargarArchivoEnVector(PATH_TRANSFERENCIAS_CSV, &transferenciasPersonales, armaTransfPersonales);
+
+    verificarCodRet(codRet);
+
+    if(codRet != TODO_OK)
+    {
+        vectorDestruir(&transferenciasPersonales);
+        return 1;
+    }
 
     menuEjecutar(PATH_INTERMEDIO_CSV, PATH_CONTINENTES_CSV, &transferenciasPersonales);
 

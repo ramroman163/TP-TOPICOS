@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include "../TDAVector/Vector.h"
 #include "../Archivos/archivos.h"
+#include "../Utils/utils.h"
 
-void cargarArchivoEnVector(const char *path, Vector *v, CargaStruct accion)
+int cargarArchivoEnVector(const char *path, Vector *v, CargaStruct accion)
 {
     FILE *archivo;
     char linea[256];
@@ -13,28 +14,41 @@ void cargarArchivoEnVector(const char *path, Vector *v, CargaStruct accion)
     if(!elemento)
     {
         puts("Hubo un error reinicie el programa");
-        return;
+        return SIN_MEM;
     }
 
     archivo = fopen(path, "r");
     if (archivo == NULL)
     {
         printf("Error: no se pudo abrir %s\n", path);
-        return;
+        return ACCESO_ARCH_FALLIDO;
     }
 
     fgets(linea, sizeof(linea), archivo);
 
     while (fgets(linea, sizeof(linea), archivo) != NULL)
     {
-        accion(linea, elemento); //aca se guarda el registro en la estructura correspondiente
+        int codRet = accion(linea, elemento); //aca se guarda el registro en la estructura correspondiente
 
-        vectorInsertarAlFinal(v, elemento); //lo guardo en el vector
+        if(codRet == ERROR_LINEA_LARGA)
+        {
+            free(elemento);
+            fclose(archivo);
+            printf("Hubo un error con el archivo %s\n", path);
+            return codRet;
+        }
+
+        if(codRet == TODO_OK)
+            vectorInsertarAlFinal(v, elemento); //lo guardo en el vector
+
+        verificarCodRet(codRet);
     }
 
     free(elemento);
 
     fclose(archivo);
+
+    return TODO_OK;
 }
 
 void exportar_vec_a_binario(const char *path, const Vector *v)

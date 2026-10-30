@@ -323,8 +323,8 @@ void printClasificacion(const void *e)
 void printResulTrim(const void *e)
 {
     const tResulPromPais* promTrim = (tResulPromPais*)e;
-    printf("%-10s  %-25s  %3c  %8d  %15.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, 'C', promTrim->cantTrimCred, promTrim->promCredito);
-    printf("%-10s  %-25s  %3c  %8d  %15.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, 'D', promTrim->cantTrimDeb, promTrim->promDebito);
+    printf("%-10s | %-50s | %9c | %9d | %8.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, 'C', promTrim->cantTrimCred, promTrim->promCredito);
+    printf("%-10s | %-50s | %9c | %9d | %8.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, 'D', promTrim->cantTrimDeb, promTrim->promDebito);
 }
 
 int compararContinenteAnio(const void* a, const void* b)
@@ -395,7 +395,7 @@ int compararTransferenciasChar(const void* a, const void* b)
 void printResumen(const void *e)
 {
     const tTotalOperaciones* resumen = (tTotalOperaciones*)e;
-    printf("%-10s  %-30s  %-10d  %15.2f  %15.2f\n", resumen->codigoPais, resumen->descripcionPais,
+    printf("%-10s | %-50s | %10d | %13.2f | %12.2f\n", resumen->codigoPais, resumen->descripcionPais,
         resumen->cantidadRegistros, resumen->totalCreditos, resumen->totalDebitos);
 }
 
@@ -403,7 +403,7 @@ void printResulTrimCont(const void *e)
 {
     const tResulPromCont* resul = (tResulPromCont*)e;
 
-    printf("%4d | %-30s | %.2f | %.2f\n", resul->anio, resul->continente, resul->promTrimCred, resul->promTrimDeb);
+    printf("%-6d | %-50s | %9.2f | %8.2f\n", resul->anio, resul->continente, resul->promTrimCred, resul->promTrimDeb);
 }
 
 void printTotalesAnualesVariacion(const void *e)
@@ -432,7 +432,7 @@ void printPartCont(const void *e)
 {
     const tParticipacionContBin* part = (tParticipacionContBin*)e;
 
-    printf("%-20s | %.2f | %.2f\n", part->continente, part->porcPartCred, part->porcPartDeb);
+    printf("%-20s | %8.2f | %8.2f\n", part->continente, part->porcPartCred, part->porcPartDeb);
 }
 
 void verificarCodRet(int cod)

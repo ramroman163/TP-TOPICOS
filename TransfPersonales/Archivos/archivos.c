@@ -30,6 +30,8 @@ int cargarArchivoEnVector(const char *path, Vector *v, CargaStruct accion)
     {
         int codRet = accion(linea, elemento); //aca se guarda el registro en la estructura correspondiente
 
+        verificarCodRet(codRet);
+
         if(codRet == ERROR_LINEA_LARGA)
         {
             free(elemento);
@@ -39,9 +41,17 @@ int cargarArchivoEnVector(const char *path, Vector *v, CargaStruct accion)
         }
 
         if(codRet == TODO_OK)
-            vectorInsertarAlFinal(v, elemento); //lo guardo en el vector
+        {
+            codRet = vectorInsertarAlFinal(v, elemento); //lo guardo en el vector
 
-        verificarCodRet(codRet);
+            if(codRet != TODO_OK)
+            {
+                free(elemento);
+                fclose(archivo);
+                verificarCodRet(codRet);
+                return codRet;
+            }
+        }
     }
 
     free(elemento);
@@ -57,7 +67,7 @@ void exportar_vec_a_binario(const char *path, const Vector *v)
 
     if (!pbin)
     {
-        puts("Hubo un error reinicie el programa");
+        printf("Hubo un error con el archivo %s\n", path);
         return;
     }
 

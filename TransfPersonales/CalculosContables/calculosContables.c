@@ -90,6 +90,8 @@ int generarArchivoIntermedio(const char *path_intermedio, const char *path_conti
     fclose(p_intermedio);
     vectorDestruir(&continentes);
 
+    printf("\nArchivo generado: %s\n", path_intermedio);
+
     return TODO_OK;
 }
 
@@ -166,7 +168,8 @@ int totalesPorContinente(const char *path_intermedio)
 
     vectorOrdenar(&clasificaciones, INSERCION, compararCreditoDesc);
 
-    printf("%-20s | %10s | %8s | %8s\n\n", "CONTINENTE", "REGISTROS", "CREDITO", "DEBITO");
+    printf("%-20s | %10s | %8s | %8s\n", "CONTINENTE", "REGISTROS", "CREDITO", "DEBITO");
+    printf("---------------------------------------------------------\n");
 
     vectorMostrar(&clasificaciones, printClasificacion);
 
@@ -176,15 +179,6 @@ int totalesPorContinente(const char *path_intermedio)
 }
 
 // Punto 1
-void ordenarTransferenciasxCod(Vector* transferencias)
-{
-    vectorOrdenar(transferencias, FUSION, compararTransferenciasChar);
-}
-
-void ordenarTransferenciasxCredito(Vector* transferencias)
-{
-    vectorOrdenar(transferencias, FUSION, compararCreditoPaisDesc);
-}
 
 int contaryCargarOperaciones(const Vector* vCopiaTransferencias, Vector* vTransfResumen)
 {
@@ -203,8 +197,8 @@ int contaryCargarOperaciones(const Vector* vCopiaTransferencias, Vector* vTransf
     {
         int contRegistros = 0;
         float acumCreditos = 0, acumDebitos = 0;
-        char codPaisActual[3];
-        char descPaisActual[50];
+        char codPaisActual[TAM_COD + 1];
+        char descPaisActual[TAM_DESC + 1];
 
         strcpy(codPaisActual, i->codigo_pais);
         strcpy(descPaisActual, i->descripcion_pais);
@@ -242,10 +236,11 @@ int contaryCargarOperaciones(const Vector* vCopiaTransferencias, Vector* vTransf
     return TODO_OK;
 }
 
-void mostrarVectorTransfResumen(const Vector* v, Print printResumen)
+void mostrarVectorTransfResumen(const Vector* v)
 {
     printf("\n");
-    printf("%-10s  %-30s  %-10s  %-15s  %-15s\n", "PAIS_COD", "PAIS_DESC", "registros", "total_credito", "total_debito");
+    printf("%-10s | %-50s | %10s | %8s | %8s\n", "PAIS_COD", "PAIS_DESC", "REGISTROS", "TOTAL_CREDITO", "TOTAL_DEBITO");
+    printf("-------------------------------------------------------------------------------------------------------------\n");
     vectorMostrar(v, printResumen);
 }
 
@@ -264,7 +259,7 @@ int totalesPorPais(const Vector *vTransferencias)
         return SIN_DATOS;
     }
 
-    ordenarTransferenciasxCod(&copiaTransferencias);
+    vectorOrdenar(&copiaTransferencias, FUSION, compararTransferenciasChar);
 
     Vector vResumen; //para  guardar la nueva estructura en un vector
 
@@ -284,9 +279,9 @@ int totalesPorPais(const Vector *vTransferencias)
         return codRet;
     }
 
-    ordenarTransferenciasxCredito(&vResumen);
+    vectorOrdenar(&vResumen, FUSION, compararCreditoPaisDesc);
 
-    mostrarVectorTransfResumen(&vResumen, printResumen);
+    mostrarVectorTransfResumen(&vResumen);
 
     vectorDestruir(&copiaTransferencias);
     vectorDestruir(&vResumen);
@@ -350,22 +345,28 @@ int calcularSaldosTrimestrales(const Vector* vAnio)
 
     //Creo el archivo de texto
     arch = fopen("saldo_trimestral.txt", "wt");
+
     if(arch == NULL)
     {
         free(saldos);
+        printf("Error: no se pudo abrir %s\n", "saldo_trimestral.txt");
         return ACCESO_ARCH_FALLIDO;
     }
 
-    fprintf(arch, "%-30s %12s %12s %12s %12s\n", "PAIS", "T1", "T2", "T3", "T4");
+    fprintf(arch, "%-49s %12s %12s %12s %12s\n", "PAIS", "T1", "T2", "T3", "T4");
+    printf("\n%-49s | %12s | %12s | %12s | %12s\n", "PAIS", "T1", "T2", "T3", "T4");
+    printf("--------------------------------------------------------------------------------------------------------------\n");
     i = vectorGetElementoDePos(vAnio, 0);
 
     //Calculo los saldos de cada pais
     while(i < ult)
     {
         pais = i;
+
         do
         {
             trimestre = i->trimestre - 1;
+
             if(trimestre >= 0 && trimestre < 4)
             {
                 if(i->operacion == 'C')
@@ -380,10 +381,17 @@ int calcularSaldosTrimestrales(const Vector* vAnio)
         }
         while(i < ult && compararPaisNombre(pais, i) == 0);
 
-        fprintf(arch, "%-30s", pais->descripcion_pais);
+        fprintf(arch, "%-50s", pais->descripcion_pais);
+        printf("%-50s", pais->descripcion_pais);
+
         for(j = 0; j < 4; j++)
+        {
             fprintf(arch, " %12.2f", *(*(saldos + fila) + j));
+            printf("| %12.2f ", *(*(saldos + fila) + j));
+        }
+
         fprintf(arch, "\n");
+        printf("\n");
 
         fila++;
     }
@@ -391,7 +399,9 @@ int calcularSaldosTrimestrales(const Vector* vAnio)
     // Cierro el archivo y libero la memoria
     fclose(arch);
     free(saldos);
-    printf("Archivo generado: saldo_trimestral.txt\n");
+
+    printf("\nArchivo generado: saldo_trimestral.txt\n");
+
     return TODO_OK;
 }
 
@@ -504,11 +514,12 @@ int rankingPaises(const Vector *transferencias)
         return SIN_DATOS;
     }
 
-    printf("\n=============================================================================\n");
-    printf("-------------------- RANKING DE PAISES -------------------\n");
-    printf("\n==============================================================================\n");
+    printf("\n=============================================================================================================\n");
+    printf("----------------------------------------- RANKING DE PAISES -----------------------------------------");
+    printf("\n=============================================================================================================\n\n");
 
-    n = ingresarEnteroRango(1, (int)totalPaises, "Ingrese la cantidad N de paises a listar:");
+    n = ingresarEnteroRango(1, (int)totalPaises, "Ingrese la cantidad N de paises a listar: ");
+    puts("");
 
     //Comienzo a ordenar
     if (operacion == 'C')
@@ -517,7 +528,8 @@ int rankingPaises(const Vector *transferencias)
         vectorOrdenar(&paises, INSERCION, compararDebitoPaisDesc);
 
 
-    printf("\n%-10s | %-25s | %-10s | %-15s | %-15s\n", "PAIS_COD", "PAIS_DESC", "registros", "total_credito", "total_debito");
+    printf("%-10s | %-50s | %10s | %8s | %8s\n", "PAIS_COD", "PAIS_DESC", "REGISTROS", "TOTAL_CREDITO", "TOTAL_DEBITO");
+    printf("-------------------------------------------------------------------------------------------------------------\n");
 
     for(i=0; i < (size_t)n; i++)
     {
@@ -532,7 +544,8 @@ int rankingPaises(const Vector *transferencias)
 // Punto 8
 void mostrarResulPromTrimPais(const Vector* miVecResul, Print printResulTrim)
 {
-    printf("\n%-10s  %-25s  %3s  %8s  %12s\n", "COD_PAIS", "DESC_PAIS", "OPERACION", "CANT_TRIM", "PROMEDIO");
+    printf("%-10s | %-50s | %9s | %9s | %8s\n", "COD_PAIS", "DESC_PAIS", "OPERACION", "CANT_TRIM", "PROMEDIO");
+    printf("----------------------------------------------------------------------------------------------------\n");
     vectorMostrar(miVecResul, printResulTrim);
 }
 
@@ -572,7 +585,7 @@ int promedioTrimestralPorPais(const char *path_intermedio)
     float acumTrimCred;
 
     tResulPromPais miObjResul;
-    char codPais[3];
+    char codPais[TAM_COD + 1];
 
     tIntermedio* i = vectorGetElementoDePos(&miVecInter, 0);
     tIntermedio* ult = vectorGetElementoDePos(&miVecInter, (int)vectorCE(&miVecInter) - 1);
@@ -655,7 +668,8 @@ int promedioTrimestralPorPais(const char *path_intermedio)
 // Punto 9
 void mostrarResulPromTrimCont(const Vector* miVecResul, Print printResulTrimCont)
 {
-    printf("\n%-10s  %-25s  %3s  %8s\n", "ANIO", "CONTINENTE", "PROM CRED", "PROM DEB");
+    printf("%-6s | %-50s | %9s | %8s\n", "ANIO", "CONTINENTE", "PROM CRED", "PROM DEB");
+    printf("------------------------------------------------------------------------------------\n");
     vectorMostrar(miVecResul, printResulTrimCont);
 }
 
@@ -696,7 +710,7 @@ int promedioTrimestralPorContinente(const char *path_intermedio)
     float acumTrimCred;
 
     tResulPromCont miObjResul;
-    char continenteAct[20];
+    char continenteAct[TAM_CONT + 1];
     int anioAct;
 
     tIntermedio* i =  vectorGetElementoDePos(&miVecInter, 0);
@@ -878,8 +892,8 @@ int totalesAnualesVariacion(const Vector *transferencias)
 
 void mostrarTotalesAnualesVariacion(const Vector* anios, Print printTotalesAnualesVariacion)
 {
-    printf("\n%-6s | %-12s | %-12s | %-12s | %-15s\n", "ANIO", "C", "D", "SALDO", "VAR_PCT_SALDO");
-    printf("-----------------------------------------------------------------------\n");
+    printf("\n%-6s | %12s | %12s | %12s | %15s\n", "ANIO", "C", "D", "SALDO", "VAR_PCT_SALDO");
+    printf("----------------------------------------------------------------------\n");
 
     vectorMostrar(anios, printTotalesAnualesVariacion);
 }
@@ -1023,5 +1037,6 @@ int participacionPorContinente(const char *pathIntermedio)
 void mostrarResulPartCont(const Vector* partContinentesBin, Print printPartCont)
 {
     printf("%-20s | %8s | %8s\n", "CONTINENTE", "CREDITO", "DEBITO");
+    printf("--------------------------------------------\n");
     vectorMostrar(partContinentesBin, printPartCont);
 }

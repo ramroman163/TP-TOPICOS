@@ -6,10 +6,8 @@
 
 
 int totalesPorPais(const Vector *vTransferencias);
-void ordenarTransferenciasxCod(Vector* transferencias);
-void ordenarTransferenciasxCredito(Vector* transferencias);
 int contaryCargarOperaciones(const Vector* vTransfercias, Vector* vTransfResumen);
-void mostrarVectorTransfResumen(const Vector* v, Print printResumen);
+void mostrarVectorTransfResumen(const Vector* v);
 int totalesPorContinente(const char *path_intermedio);
 int saldoTrimestralPorPais(const Vector* transferencias);
 int calcularSaldosTrimestrales(const Vector* vAnio);

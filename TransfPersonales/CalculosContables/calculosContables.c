@@ -25,161 +25,7 @@ bool verificarExistenciaArchivoIntermedio(const char *path_intermedio)
     return true;
 }
 
-// Punto 7
-
-int generarArchivoIntermedio(const char *path_intermedio, const char *path_continentes, const Vector* transferencias)
-{
-    Vector continentes;
-
-    if(!vectorCrear(&continentes, sizeof(tContinentes)))
-    {
-        return SIN_MEM;
-    }
-
-    int codRet = cargarArchivoEnVector(path_continentes, &continentes, armaContinentes);
-
-    if(codRet != TODO_OK)
-        return codRet;
-
-    FILE *p_intermedio = fopen(path_intermedio, "wt");
-
-    if(p_intermedio == NULL)
-    {
-        vectorDestruir(&continentes);
-        printf("Error: no se pudo abrir %s\n", path_intermedio);
-        return ACCESO_ARCH_FALLIDO;
-    }
-
-    fprintf(p_intermedio, "ANIO;TRIMESTRE;PAIS_COD;PAIS_DESC;CONTINENTE;OPERACION;MONTO\n");
-
-    int cantidad = (int)vectorCE(transferencias);
-
-    if(cantidad == 0)
-    {
-        vectorDestruir(&continentes);
-        return SIN_DATOS;
-    }
-
-    for(int i = 0 ; i < cantidad ; i++)
-    {
-        tPersonales *transferencia = vectorGetElementoDePos(transferencias, i);
-
-        int pos = vectorOrdBuscar(&continentes, transferencia, compararCodigoPais);
-
-        if(pos == -1)
-            printf("No se pudo procesar la transferencia %d\n", i + 1);
-        else
-        {
-            tContinentes *continente = vectorGetElementoDePos(&continentes, pos);
-
-            tIntermedio elem;
-
-            elem.anio = transferencia->anio;
-            elem.trimestre = transferencia->trimestre;
-            strcpy(elem.codigo_pais, transferencia->codigo_pais);
-            strcpy(elem.descripcion_pais, transferencia->descripcion_pais);
-            strcpy(elem.continente, continente->continente);
-            elem.operacion = transferencia->operacion;
-            elem.monto = transferencia->monto;
-
-            fprintf(p_intermedio,"%d;%d;%s;%s;%s;%c;%.2f\n", elem.anio, elem.trimestre, elem.codigo_pais,
-                elem.descripcion_pais, elem.continente, elem.operacion, elem.monto);
-        }
-    }
-
-    fclose(p_intermedio);
-    vectorDestruir(&continentes);
-
-    printf("\nArchivo generado: %s\n", path_intermedio);
-
-    return TODO_OK;
-}
-
-// Punto 2
-int totalesPorContinente(const char *path_intermedio)
-{
-    FILE *p_intermedio = fopen(path_intermedio, "rt");
-
-    if(p_intermedio == NULL)
-    {
-        printf("Error: no se pudo abrir %s\n", path_intermedio);
-        return ACCESO_ARCH_FALLIDO;
-    }
-
-    Vector clasificaciones;
-    char linea[256];
-    tIntermedio inter;
-    tClasificacion clasif;
-
-    if(!vectorCrear(&clasificaciones, sizeof(tClasificacion)))
-    {
-        fclose(p_intermedio);
-        return SIN_MEM;
-    }
-
-    fgets(linea, sizeof(linea), p_intermedio);
-
-    while(fgets(linea, sizeof(linea), p_intermedio) != NULL)
-    {
-        armaIntermedio(linea, &inter);
-
-        int pos = vectorDesordBuscar(&clasificaciones, &inter, compararContinente);
-
-        if(pos == -1)
-        {
-            strcpy(clasif.continente, inter.continente);
-            clasif.registros = 1;
-            clasif.total_credito = 0;
-            clasif.total_debito = 0;
-
-            if(inter.operacion == 'C')
-                clasif.total_credito += inter.monto;
-
-            if(inter.operacion == 'D')
-                clasif.total_debito += inter.monto;
-
-            int codRet = vectorInsertarAlFinal(&clasificaciones, &clasif);
-
-            if(codRet != TODO_OK)
-            {
-                fclose(p_intermedio);
-                vectorDestruir(&clasificaciones);
-                return codRet;
-            }
-        }
-        else
-        {
-            tClasificacion *clasificacion = vectorGetElementoDePos(&clasificaciones, pos);
-
-            clasificacion->registros++;
-
-            if(inter.operacion == 'C')
-            {
-                clasificacion->total_credito += inter.monto;
-            }
-            if(inter.operacion == 'D')
-            {
-               clasificacion->total_debito += inter.monto;
-            }
-        }
-    }
-
-    fclose(p_intermedio);
-
-    vectorOrdenar(&clasificaciones, INSERCION, compararCreditoDesc);
-
-    printf("%-20s | %10s | %8s | %8s\n", "CONTINENTE", "REGISTROS", "CREDITO", "DEBITO");
-    printf("---------------------------------------------------------\n");
-
-    vectorMostrar(&clasificaciones, printClasificacion);
-
-    vectorDestruir(&clasificaciones);
-
-    return TODO_OK;
-}
-
 // Punto 1
-
 int contaryCargarOperaciones(const Vector* vCopiaTransferencias, Vector* vTransfResumen)
 {
     int cantidadElem = (int)vectorCE(vCopiaTransferencias);
@@ -285,6 +131,89 @@ int totalesPorPais(const Vector *vTransferencias)
 
     vectorDestruir(&copiaTransferencias);
     vectorDestruir(&vResumen);
+
+    return TODO_OK;
+}
+
+// Punto 2
+int totalesPorContinente(const char *path_intermedio)
+{
+    FILE *p_intermedio = fopen(path_intermedio, "rt");
+
+    if(p_intermedio == NULL)
+    {
+        printf("Error: no se pudo abrir %s\n", path_intermedio);
+        return ACCESO_ARCH_FALLIDO;
+    }
+
+    Vector clasificaciones;
+    char linea[256];
+    tIntermedio inter;
+    tClasificacion clasif;
+
+    if(!vectorCrear(&clasificaciones, sizeof(tClasificacion)))
+    {
+        fclose(p_intermedio);
+        return SIN_MEM;
+    }
+
+    fgets(linea, sizeof(linea), p_intermedio);
+
+    while(fgets(linea, sizeof(linea), p_intermedio) != NULL)
+    {
+        armaIntermedio(linea, &inter);
+
+        int pos = vectorDesordBuscar(&clasificaciones, &inter, compararContinente);
+
+        if(pos == -1)
+        {
+            strcpy(clasif.continente, inter.continente);
+            clasif.registros = 1;
+            clasif.total_credito = 0;
+            clasif.total_debito = 0;
+
+            if(inter.operacion == 'C')
+                clasif.total_credito += inter.monto;
+
+            if(inter.operacion == 'D')
+                clasif.total_debito += inter.monto;
+
+            int codRet = vectorInsertarAlFinal(&clasificaciones, &clasif);
+
+            if(codRet != TODO_OK)
+            {
+                fclose(p_intermedio);
+                vectorDestruir(&clasificaciones);
+                return codRet;
+            }
+        }
+        else
+        {
+            tClasificacion *clasificacion = vectorGetElementoDePos(&clasificaciones, pos);
+
+            clasificacion->registros++;
+
+            if(inter.operacion == 'C')
+            {
+                clasificacion->total_credito += inter.monto;
+            }
+            if(inter.operacion == 'D')
+            {
+               clasificacion->total_debito += inter.monto;
+            }
+        }
+    }
+
+    fclose(p_intermedio);
+
+    vectorOrdenar(&clasificaciones, INSERCION, compararCreditoDesc);
+
+    printf("%-20s | %10s | %8s | %8s\n", "CONTINENTE", "REGISTROS", "CREDITO", "DEBITO");
+    printf("---------------------------------------------------------\n");
+
+    vectorMostrar(&clasificaciones, printClasificacion);
+
+    vectorDestruir(&clasificaciones);
 
     return TODO_OK;
 }
@@ -439,354 +368,6 @@ int saldoTrimestralPorPais(const Vector* transferencias)
     return TODO_OK;
 }
 
-// Punto 5
-int rankingPaises(const Vector *transferencias)
-{
-    Vector paises;
-    tTotalOperaciones paisAux;
-    char operacion;
-    int n;
-    size_t totalPaises;
-    int i;
-    int cantidadElem = (int)vectorCE(transferencias);//reemplazo transferencias->ce por cantidadElem en el siguiente if y en el for
-
-    if (transferencias == NULL)
-    {
-        printf("ERROR - El puntero a transferencias es nulo.\n");
-        return SIN_DATOS;
-    }
-
-    if(vectorCE(transferencias)==0)
-    {
-        printf("ERROR: No hay datos de transferencias cargados en memoria.\n");
-        return SIN_DATOS;
-    }
-
-//Valido e ingreso el tipo de operacion
-    do
-    {
-        printf("Ingrese el tipo de operacion ('C' para Credito, 'D' para Debito): ");
-        scanf(" %c", &operacion);
-
-        operacion = toupper(operacion);
-    } while (operacion != 'C' && operacion != 'D');
-
-
-    if(!vectorCrear(&paises, sizeof(tTotalOperaciones)))
-        return SIN_MEM;
-
-    for (i = 0; i < cantidadElem; i++) //Acumulo registros por pais
-    {
-        const tPersonales *t = (tPersonales*)vectorGetElementoDePos(transferencias, i);//casteo el void* por la estructura correcta
-
-        int pos = vectorDesordBuscar(&paises, t, compararCodigoPaisTotales);
-
-        if (pos == -1)
-        {
-            strcpy(paisAux.codigoPais, t->codigo_pais);
-            strcpy(paisAux.descripcionPais, t->descripcion_pais);
-            paisAux.cantidadRegistros = 1;
-            paisAux.totalCreditos = (t->operacion == 'C') ? t->monto : 0;
-            paisAux.totalDebitos = (t->operacion == 'D') ? t->monto : 0;
-
-            int codRet = vectorInsertarAlFinal(&paises, &paisAux);
-            if(codRet != TODO_OK)
-                return codRet;
-        }
-        else
-        {
-            tTotalOperaciones *paisExistente = vectorGetElementoDePos(&paises, pos);
-            paisExistente->cantidadRegistros++;
-
-            if (t->operacion == 'C')
-                paisExistente->totalCreditos += t->monto;
-            else if (t->operacion == 'D')
-                paisExistente->totalDebitos += t->monto;
-        }
-    }
-
-    totalPaises = vectorCE(&paises);
-
-    if (totalPaises == 0)
-    {
-        printf("No se encontraron registros de paises para procesar.\n");
-        vectorDestruir(&paises);
-        return SIN_DATOS;
-    }
-
-    printf("\n=============================================================================================================\n");
-    printf("----------------------------------------- RANKING DE PAISES -----------------------------------------");
-    printf("\n=============================================================================================================\n\n");
-
-    n = ingresarEnteroRango(1, (int)totalPaises, "Ingrese la cantidad N de paises a listar: ");
-    puts("");
-
-    //Comienzo a ordenar
-    if (operacion == 'C')
-        vectorOrdenar(&paises, INSERCION, compararCreditoPaisDesc);
-    else
-        vectorOrdenar(&paises, INSERCION, compararDebitoPaisDesc);
-
-
-    printf("%-10s | %-50s | %10s | %8s | %8s\n", "PAIS_COD", "PAIS_DESC", "REGISTROS", "TOTAL_CREDITO", "TOTAL_DEBITO");
-    printf("-------------------------------------------------------------------------------------------------------------\n");
-
-    for(i=0; i < (size_t)n; i++)
-    {
-        printResumen(vectorGetElementoDePos(&paises, i));
-    }
-
-    vectorDestruir(&paises);
-    return TODO_OK;
-
-}
-
-// Punto 8
-void mostrarResulPromTrimPais(const Vector* miVecResul, Print printResulTrim)
-{
-    printf("%-10s | %-50s | %9s | %9s | %8s\n", "COD_PAIS", "DESC_PAIS", "OPERACION", "CANT_TRIM", "PROMEDIO");
-    printf("----------------------------------------------------------------------------------------------------\n");
-    vectorMostrar(miVecResul, printResulTrim);
-}
-
-int promedioTrimestralPorPais(const char *path_intermedio)
-{
-    Vector miVecInter;
-    Vector miVecResul;
-
-    if(!vectorCrear(&miVecInter, sizeof(tIntermedio)))
-    {
-        return SIN_MEM;
-    }
-
-    if(!vectorCrear(&miVecResul, sizeof(tResulPromPais)))
-    {
-        return SIN_MEM;
-    }
-
-    int codRet = cargarArchivoEnVector(path_intermedio, &miVecInter, armaIntermedio);
-
-    if(codRet != TODO_OK)
-        return codRet;
-
-    if(vectorCE(&miVecInter) == 0)
-    {
-        vectorDestruir(&miVecInter);
-        vectorDestruir(&miVecResul);
-        return SIN_DATOS;
-    }
-
-    // Ordenamiento por codigo de pais
-    vectorOrdenar(&miVecInter, FUSION, compararPaisIntermedio);
-
-    int contTrimDeb;
-    int contTrimCred;
-    float acumTrimDeb;
-    float acumTrimCred;
-
-    tResulPromPais miObjResul;
-    char codPais[TAM_COD + 1];
-
-    tIntermedio* i = vectorGetElementoDePos(&miVecInter, 0);
-    tIntermedio* ult = vectorGetElementoDePos(&miVecInter, (int)vectorCE(&miVecInter) - 1);
-
-    while(i <= ult)
-    {
-        strcpy(codPais, i->codigo_pais);
-
-        contTrimDeb = contTrimCred = 0;
-        acumTrimDeb = acumTrimCred = 0.0;
-
-        strcpy(miObjResul.codigo_pais, i->codigo_pais);
-        strcpy(miObjResul.descripcion_pais, i->descripcion_pais);
-
-        while(i <= ult && strcmp(i->codigo_pais, codPais) == 0)
-        {
-            if(i->monto > 0)
-            {
-                if(i->operacion == 'C')
-                {
-                    contTrimCred++;
-                    acumTrimCred += i->monto;
-                }
-                else
-                {
-                    contTrimDeb++;
-                    acumTrimDeb += i->monto;
-                }
-
-            }
-
-            i++;
-        }
-
-        // Cargamos promedios para un pais, en una sola fila
-
-        if(contTrimCred == 0)
-        {
-            miObjResul.promCredito = 0.0;
-        }
-        else
-        {
-            miObjResul.promCredito = (acumTrimCred) / contTrimCred;
-        }
-
-        miObjResul.cantTrimCred = contTrimCred;
-
-        if(contTrimDeb == 0)
-        {
-            miObjResul.promDebito = 0.0;
-        }
-        else
-        {
-            miObjResul.promDebito = (acumTrimDeb) / contTrimDeb;
-        }
-
-        miObjResul.cantTrimDeb = contTrimDeb;
-
-        codRet = vectorInsertarAlFinal(&miVecResul, &miObjResul);
-
-        if(codRet != TODO_OK)
-        {
-            vectorDestruir(&miVecInter);
-            vectorDestruir(&miVecResul);
-            return codRet;
-        }
-    }
-
-    vectorOrdenar(&miVecResul, FUSION, compararPromCredTrimPais);
-
-    mostrarResulPromTrimPais(&miVecResul, printResulTrim);
-
-    vectorDestruir(&miVecInter);
-    vectorDestruir(&miVecResul);
-
-    return TODO_OK;
-}
-
-
-// Punto 9
-void mostrarResulPromTrimCont(const Vector* miVecResul, Print printResulTrimCont)
-{
-    printf("%-6s | %-50s | %9s | %8s\n", "ANIO", "CONTINENTE", "PROM CRED", "PROM DEB");
-    printf("------------------------------------------------------------------------------------\n");
-    vectorMostrar(miVecResul, printResulTrimCont);
-}
-
-int promedioTrimestralPorContinente(const char *path_intermedio)
-{
-    Vector miVecInter;
-    Vector miVecResul;
-
-    if(!vectorCrear(&miVecInter, sizeof(tIntermedio)))
-    {
-        return SIN_MEM;
-    }
-
-    if(!vectorCrear(&miVecResul, sizeof(tResulPromCont)))
-    {
-        vectorDestruir(&miVecInter);
-        return SIN_MEM;
-    }
-
-    int codRet = cargarArchivoEnVector(path_intermedio, &miVecInter, armaIntermedio);
-
-    if(codRet != TODO_OK)
-        return codRet;
-
-    if(vectorCE(&miVecInter) == 0)
-    {
-        vectorDestruir(&miVecInter);
-        vectorDestruir(&miVecResul);
-        return SIN_DATOS;
-    }
-
-    // Ordenamos por año + continente
-    vectorOrdenar(&miVecInter, FUSION, compararContinenteAnio);
-
-    int contTrimDeb;
-    int contTrimCred;
-    float acumTrimDeb;
-    float acumTrimCred;
-
-    tResulPromCont miObjResul;
-    char continenteAct[TAM_CONT + 1];
-    int anioAct;
-
-    tIntermedio* i =  vectorGetElementoDePos(&miVecInter, 0);
-    tIntermedio* ult = vectorGetElementoDePos(&miVecInter, (int)vectorCE(&miVecInter) - 1);
-
-
-    while(i <= ult)
-    {
-        anioAct = i->anio; // info de comparacion
-
-        while(i <= ult && anioAct == i->anio)
-        {
-            strcpy(continenteAct, i->continente); // info de comparacion
-
-            contTrimDeb = contTrimCred = 0;
-            acumTrimDeb = acumTrimCred = 0.0;
-
-            while(i <= ult && strcmp(continenteAct, i->continente) == 0 && anioAct == i->anio)//para el caso en donde termine un mismo anio y siga otro con el mismo continente
-            {
-                if(i->monto > 0)
-                {
-                    if(i->operacion == 'C')
-                    {
-                        contTrimCred++;
-                        acumTrimCred += i->monto;
-                    }
-                    else
-                    {
-                        contTrimDeb++;
-                        acumTrimDeb += i->monto;
-                    }
-                }
-
-                i++;
-            }
-
-            strcpy(miObjResul.continente, continenteAct);
-            miObjResul.anio = anioAct;
-
-            if(contTrimCred > 0)
-            {
-                miObjResul.promTrimCred = acumTrimCred / contTrimCred;
-            }
-            else
-            {
-                miObjResul.promTrimCred = 0.0;
-            }
-
-            if(contTrimDeb > 0)
-            {
-                miObjResul.promTrimDeb = acumTrimDeb / contTrimDeb;
-            }
-            else
-            {
-                miObjResul.promTrimDeb = 0.0;
-            }
-
-            codRet = vectorInsertarAlFinal(&miVecResul, &miObjResul);
-
-            if(codRet != TODO_OK)
-            {
-                vectorDestruir(&miVecInter);
-                vectorDestruir(&miVecResul);
-                return codRet;
-            }
-        }
-    }
-
-    mostrarResulPromTrimCont(&miVecResul, printResulTrimCont);
-
-    vectorDestruir(&miVecInter);
-    vectorDestruir(&miVecResul);
-
-    return TODO_OK;
-}
-
 // Punto 4
 int acumularDatosAnuales(const Vector *transferencias, Vector* anios)
 {
@@ -896,6 +477,108 @@ void mostrarTotalesAnualesVariacion(const Vector* anios, Print printTotalesAnual
     printf("----------------------------------------------------------------------\n");
 
     vectorMostrar(anios, printTotalesAnualesVariacion);
+}
+
+// Punto 5
+int rankingPaises(const Vector *transferencias)
+{
+    Vector paises;
+    tTotalOperaciones paisAux;
+    char operacion;
+    int n;
+    size_t totalPaises;
+    int i;
+    int cantidadElem = (int)vectorCE(transferencias);//reemplazo transferencias->ce por cantidadElem en el siguiente if y en el for
+
+    if (transferencias == NULL)
+    {
+        printf("ERROR - El puntero a transferencias es nulo.\n");
+        return SIN_DATOS;
+    }
+
+    if(vectorCE(transferencias)==0)
+    {
+        printf("ERROR: No hay datos de transferencias cargados en memoria.\n");
+        return SIN_DATOS;
+    }
+
+//Valido e ingreso el tipo de operacion
+    do
+    {
+        printf("Ingrese el tipo de operacion ('C' para Credito, 'D' para Debito): ");
+        scanf(" %c", &operacion);
+
+        operacion = toupper(operacion);
+    } while (operacion != 'C' && operacion != 'D');
+
+
+    if(!vectorCrear(&paises, sizeof(tTotalOperaciones)))
+        return SIN_MEM;
+
+    for (i = 0; i < cantidadElem; i++) //Acumulo registros por pais
+    {
+        const tPersonales *t = (tPersonales*)vectorGetElementoDePos(transferencias, i);//casteo el void* por la estructura correcta
+
+        int pos = vectorDesordBuscar(&paises, t, compararCodigoPaisTotales);
+
+        if (pos == -1)
+        {
+            strcpy(paisAux.codigoPais, t->codigo_pais);
+            strcpy(paisAux.descripcionPais, t->descripcion_pais);
+            paisAux.cantidadRegistros = 1;
+            paisAux.totalCreditos = (t->operacion == 'C') ? t->monto : 0;
+            paisAux.totalDebitos = (t->operacion == 'D') ? t->monto : 0;
+
+            int codRet = vectorInsertarAlFinal(&paises, &paisAux);
+            if(codRet != TODO_OK)
+                return codRet;
+        }
+        else
+        {
+            tTotalOperaciones *paisExistente = vectorGetElementoDePos(&paises, pos);
+            paisExistente->cantidadRegistros++;
+
+            if (t->operacion == 'C')
+                paisExistente->totalCreditos += t->monto;
+            else if (t->operacion == 'D')
+                paisExistente->totalDebitos += t->monto;
+        }
+    }
+
+    totalPaises = vectorCE(&paises);
+
+    if (totalPaises == 0)
+    {
+        printf("No se encontraron registros de paises para procesar.\n");
+        vectorDestruir(&paises);
+        return SIN_DATOS;
+    }
+
+    printf("\n=============================================================================================================\n");
+    printf("----------------------------------------- RANKING DE PAISES -----------------------------------------");
+    printf("\n=============================================================================================================\n\n");
+
+    n = ingresarEnteroRango(1, (int)totalPaises, "Ingrese la cantidad N de paises a listar: ");
+    puts("");
+
+    //Comienzo a ordenar
+    if (operacion == 'C')
+        vectorOrdenar(&paises, INSERCION, compararCreditoPaisDesc);
+    else
+        vectorOrdenar(&paises, INSERCION, compararDebitoPaisDesc);
+
+
+    printf("%-10s | %-50s | %10s | %8s | %8s\n", "PAIS_COD", "PAIS_DESC", "REGISTROS", "TOTAL_CREDITO", "TOTAL_DEBITO");
+    printf("-------------------------------------------------------------------------------------------------------------\n");
+
+    for(i=0; i < (size_t)n; i++)
+    {
+        printResumen(vectorGetElementoDePos(&paises, i));
+    }
+
+    vectorDestruir(&paises);
+    return TODO_OK;
+
 }
 
 // Punto 6
@@ -1039,4 +722,318 @@ void mostrarResulPartCont(const Vector* partContinentesBin, Print printPartCont)
     printf("%-20s | %8s | %8s\n", "CONTINENTE", "CREDITO", "DEBITO");
     printf("--------------------------------------------\n");
     vectorMostrar(partContinentesBin, printPartCont);
+}
+
+// Punto 7
+int generarArchivoIntermedio(const char *path_intermedio, const char *path_continentes, const Vector* transferencias)
+{
+    Vector continentes;
+
+    if(!vectorCrear(&continentes, sizeof(tContinentes)))
+    {
+        return SIN_MEM;
+    }
+
+    int codRet = cargarArchivoEnVector(path_continentes, &continentes, armaContinentes);
+
+    if(codRet != TODO_OK)
+        return codRet;
+
+    FILE *p_intermedio = fopen(path_intermedio, "wt");
+
+    if(p_intermedio == NULL)
+    {
+        vectorDestruir(&continentes);
+        printf("\nError: no se pudo abrir %s\n", path_intermedio);
+        return ACCESO_ARCH_FALLIDO;
+    }
+
+    fprintf(p_intermedio, "ANIO;TRIMESTRE;PAIS_COD;PAIS_DESC;CONTINENTE;OPERACION;MONTO\n");
+
+    int cantidad = (int)vectorCE(transferencias);
+
+    if(cantidad == 0)
+    {
+        vectorDestruir(&continentes);
+        return SIN_DATOS;
+    }
+
+    for(int i = 0 ; i < cantidad ; i++)
+    {
+        tPersonales *transferencia = vectorGetElementoDePos(transferencias, i);
+
+        int pos = vectorOrdBuscar(&continentes, transferencia, compararCodigoPais);
+
+        if(pos == -1)
+            printf("\nNo se pudo procesar la transferencia %d\n", i + 1);
+        else
+        {
+            tContinentes *continente = vectorGetElementoDePos(&continentes, pos);
+
+            tIntermedio elem;
+
+            elem.anio = transferencia->anio;
+            elem.trimestre = transferencia->trimestre;
+            strcpy(elem.codigo_pais, transferencia->codigo_pais);
+            strcpy(elem.descripcion_pais, transferencia->descripcion_pais);
+            strcpy(elem.continente, continente->continente);
+            elem.operacion = transferencia->operacion;
+            elem.monto = transferencia->monto;
+
+            fprintf(p_intermedio,"%d;%d;%s;%s;%s;%c;%.2f\n", elem.anio, elem.trimestre, elem.codigo_pais,
+                elem.descripcion_pais, elem.continente, elem.operacion, elem.monto);
+        }
+    }
+
+    fclose(p_intermedio);
+    vectorDestruir(&continentes);
+
+    printf("\nArchivo generado: %s\n\n", path_intermedio);
+
+    return TODO_OK;
+}
+
+// Punto 8
+void mostrarResulPromTrimPais(const Vector* miVecResul, Print printResulTrim)
+{
+    printf("%-10s | %-50s | %9s | %9s | %8s\n", "COD_PAIS", "DESC_PAIS", "OPERACION", "CANT_TRIM", "PROMEDIO");
+    printf("----------------------------------------------------------------------------------------------------\n");
+    vectorMostrar(miVecResul, printResulTrim);
+}
+
+int promedioTrimestralPorPais(const char *path_intermedio)
+{
+    Vector miVecInter;
+    Vector miVecResul;
+
+    if(!vectorCrear(&miVecInter, sizeof(tIntermedio)))
+    {
+        return SIN_MEM;
+    }
+
+    if(!vectorCrear(&miVecResul, sizeof(tResulPromPais)))
+    {
+        return SIN_MEM;
+    }
+
+    int codRet = cargarArchivoEnVector(path_intermedio, &miVecInter, armaIntermedio);
+
+    if(codRet != TODO_OK)
+        return codRet;
+
+    if(vectorCE(&miVecInter) == 0)
+    {
+        vectorDestruir(&miVecInter);
+        vectorDestruir(&miVecResul);
+        return SIN_DATOS;
+    }
+
+    // Ordenamiento por codigo de pais
+    vectorOrdenar(&miVecInter, FUSION, compararPaisIntermedio);
+
+    int contTrimDeb;
+    int contTrimCred;
+    float acumTrimDeb;
+    float acumTrimCred;
+
+    tResulPromPais miObjResul;
+    char codPais[TAM_COD + 1];
+
+    tIntermedio* i = vectorGetElementoDePos(&miVecInter, 0);
+    tIntermedio* ult = vectorGetElementoDePos(&miVecInter, (int)vectorCE(&miVecInter) - 1);
+
+    while(i <= ult)
+    {
+        strcpy(codPais, i->codigo_pais);
+
+        contTrimDeb = contTrimCred = 0;
+        acumTrimDeb = acumTrimCred = 0.0;
+
+        strcpy(miObjResul.codigo_pais, i->codigo_pais);
+        strcpy(miObjResul.descripcion_pais, i->descripcion_pais);
+
+        while(i <= ult && strcmp(i->codigo_pais, codPais) == 0)
+        {
+            if(i->monto > 0)
+            {
+                if(i->operacion == 'C')
+                {
+                    contTrimCred++;
+                    acumTrimCred += i->monto;
+                }
+                else
+                {
+                    contTrimDeb++;
+                    acumTrimDeb += i->monto;
+                }
+
+            }
+
+            i++;
+        }
+
+        // Cargamos promedios para un pais, en una sola fila
+
+        if(contTrimCred == 0)
+        {
+            miObjResul.promCredito = 0.0;
+        }
+        else
+        {
+            miObjResul.promCredito = (acumTrimCred) / contTrimCred;
+        }
+
+        miObjResul.cantTrimCred = contTrimCred;
+
+        if(contTrimDeb == 0)
+        {
+            miObjResul.promDebito = 0.0;
+        }
+        else
+        {
+            miObjResul.promDebito = (acumTrimDeb) / contTrimDeb;
+        }
+
+        miObjResul.cantTrimDeb = contTrimDeb;
+
+        codRet = vectorInsertarAlFinal(&miVecResul, &miObjResul);
+
+        if(codRet != TODO_OK)
+        {
+            vectorDestruir(&miVecInter);
+            vectorDestruir(&miVecResul);
+            return codRet;
+        }
+    }
+
+    vectorOrdenar(&miVecResul, FUSION, compararPromCredTrimPais);
+
+    mostrarResulPromTrimPais(&miVecResul, printResulTrim);
+
+    vectorDestruir(&miVecInter);
+    vectorDestruir(&miVecResul);
+
+    return TODO_OK;
+}
+
+// Punto 9
+void mostrarResulPromTrimCont(const Vector* miVecResul, Print printResulTrimCont)
+{
+    printf("%-6s | %-50s | %9s | %8s\n", "ANIO", "CONTINENTE", "PROM CRED", "PROM DEB");
+    printf("------------------------------------------------------------------------------------\n");
+    vectorMostrar(miVecResul, printResulTrimCont);
+}
+
+int promedioTrimestralPorContinente(const char *path_intermedio)
+{
+    Vector miVecInter;
+    Vector miVecResul;
+
+    if(!vectorCrear(&miVecInter, sizeof(tIntermedio)))
+    {
+        return SIN_MEM;
+    }
+
+    if(!vectorCrear(&miVecResul, sizeof(tResulPromCont)))
+    {
+        vectorDestruir(&miVecInter);
+        return SIN_MEM;
+    }
+
+    int codRet = cargarArchivoEnVector(path_intermedio, &miVecInter, armaIntermedio);
+
+    if(codRet != TODO_OK)
+        return codRet;
+
+    if(vectorCE(&miVecInter) == 0)
+    {
+        vectorDestruir(&miVecInter);
+        vectorDestruir(&miVecResul);
+        return SIN_DATOS;
+    }
+
+    // Ordenamos por año + continente
+    vectorOrdenar(&miVecInter, FUSION, compararContinenteAnio);
+
+    int contTrimDeb;
+    int contTrimCred;
+    float acumTrimDeb;
+    float acumTrimCred;
+
+    tResulPromCont miObjResul;
+    char continenteAct[TAM_CONT + 1];
+    int anioAct;
+
+    tIntermedio* i =  vectorGetElementoDePos(&miVecInter, 0);
+    tIntermedio* ult = vectorGetElementoDePos(&miVecInter, (int)vectorCE(&miVecInter) - 1);
+
+
+    while(i <= ult)
+    {
+        anioAct = i->anio; // info de comparacion
+
+        while(i <= ult && anioAct == i->anio)
+        {
+            strcpy(continenteAct, i->continente); // info de comparacion
+
+            contTrimDeb = contTrimCred = 0;
+            acumTrimDeb = acumTrimCred = 0.0;
+
+            while(i <= ult && strcmp(continenteAct, i->continente) == 0 && anioAct == i->anio)//para el caso en donde termine un mismo anio y siga otro con el mismo continente
+            {
+                if(i->monto > 0)
+                {
+                    if(i->operacion == 'C')
+                    {
+                        contTrimCred++;
+                        acumTrimCred += i->monto;
+                    }
+                    else
+                    {
+                        contTrimDeb++;
+                        acumTrimDeb += i->monto;
+                    }
+                }
+
+                i++;
+            }
+
+            strcpy(miObjResul.continente, continenteAct);
+            miObjResul.anio = anioAct;
+
+            if(contTrimCred > 0)
+            {
+                miObjResul.promTrimCred = acumTrimCred / contTrimCred;
+            }
+            else
+            {
+                miObjResul.promTrimCred = 0.0;
+            }
+
+            if(contTrimDeb > 0)
+            {
+                miObjResul.promTrimDeb = acumTrimDeb / contTrimDeb;
+            }
+            else
+            {
+                miObjResul.promTrimDeb = 0.0;
+            }
+
+            codRet = vectorInsertarAlFinal(&miVecResul, &miObjResul);
+
+            if(codRet != TODO_OK)
+            {
+                vectorDestruir(&miVecInter);
+                vectorDestruir(&miVecResul);
+                return codRet;
+            }
+        }
+    }
+
+    mostrarResulPromTrimCont(&miVecResul, printResulTrimCont);
+
+    vectorDestruir(&miVecInter);
+    vectorDestruir(&miVecResul);
+
+    return TODO_OK;
 }

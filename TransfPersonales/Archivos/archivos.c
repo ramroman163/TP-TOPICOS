@@ -1,38 +1,64 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../TDAVector/Vector.h"
+#include "../Archivos/archivos.h"
+#include "../Utils/utils.h"
 
-void cargarArchivoEnVector(const char *path, Vector *v, void (*accion) (const char * registro, void * elemento))
+int cargarArchivoEnVector(const char *path, Vector *v, CargaStruct accion)
 {
     FILE *archivo;
     char linea[256];
-    void *elemento = malloc(v->tamElem);
+    size_t tamanio = vectorGetTamElem(v);
+    void *elemento = malloc(tamanio);
 
     if(!elemento)
     {
         puts("Hubo un error reinicie el programa");
-        return;
+        return SIN_MEM;
     }
 
     archivo = fopen(path, "r");
     if (archivo == NULL)
     {
         printf("Error: no se pudo abrir %s\n", path);
-        return;
+        return ACCESO_ARCH_FALLIDO;
     }
 
     fgets(linea, sizeof(linea), archivo);
 
     while (fgets(linea, sizeof(linea), archivo) != NULL)
     {
-        accion(linea, elemento); //aca se guarda el registro en la estructura correspondiente
+        int codRet = accion(linea, elemento); //aca se guarda el registro en la estructura correspondiente
 
-        vectorInsertarAlFinal(v, elemento); //lo guardo en el vector
+        verificarCodRet(codRet);
+
+        if(codRet == ERROR_LINEA_LARGA)
+        {
+            free(elemento);
+            fclose(archivo);
+            printf("Hubo un error con el archivo %s\n", path);
+            return codRet;
+        }
+
+        if(codRet == TODO_OK)
+        {
+            codRet = vectorInsertarAlFinal(v, elemento); //lo guardo en el vector
+
+            if(codRet != TODO_OK)
+            {
+                free(elemento);
+                fclose(archivo);
+                verificarCodRet(codRet);
+                return codRet;
+            }
+        }
     }
 
     free(elemento);
 
     fclose(archivo);
+
+    return TODO_OK;
 }
 
 void exportar_vec_a_binario(const char *path, const Vector *v)
@@ -41,26 +67,15 @@ void exportar_vec_a_binario(const char *path, const Vector *v)
 
     if (!pbin)
     {
-        puts("Hubo un error reinicie el programa");
+        printf("Hubo un error con el archivo %s\n", path);
         return;
     }
 
-    fwrite(v->vec, v->tamElem, v->ce, pbin);
+    size_t tamanio = vectorGetTamElem(v);
+    size_t ce = vectorCE(v);
+    void *vector = vectorGetElementoDePos(v, 0);
+
+    fwrite(vector, tamanio, ce, pbin);
 
     fclose(pbin);
-}
-
-void exportar_vec_a_txt_var(const char *path, const Vector *v, void (*accion) (const Vector *v, FILE *p))
-{
-    FILE *ptxt = fopen(path, "wt");
-
-    if (!ptxt)
-    {
-        puts("Hubo un error reinicie el programa");
-        return;
-    }
-
-    accion(v, ptxt);
-
-    fclose(ptxt);
 }

@@ -65,28 +65,180 @@ void limpiar_buffer(void)
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-void armaTransfPersonales(const char *registro, void * elemento)
+int armaTransfPersonales(const char *registro, void * elemento)
 {
     tPersonales *transferencia = (tPersonales *)elemento;
 
-    sscanf(registro,"%d;%d;%2[^;];%49[^;];%c;%f", &transferencia->anio, &transferencia->trimestre,
-            transferencia->codigo_pais, transferencia->descripcion_pais, &transferencia->operacion, &transferencia->monto);
+    char* act = strchr(registro, '\n');
+
+    if(!act)
+    {
+        return ERROR_LINEA_LARGA;
+    }
+
+    *act = '\0';
+    act = strrchr(registro, ';');
+
+    if(strlen(act + 1) == 0)
+        return LINEA_FALLADA;
+
+    sscanf(act + 1, "%f", &transferencia->monto);
+
+    *act = '\0';
+    act = strrchr(registro, ';');
+
+    if(strlen(act + 1) == 0)
+        return LINEA_FALLADA;
+
+    sscanf(act + 1, "%c", &transferencia->operacion);
+
+    *act = '\0';
+    act = strrchr(registro, ';');
+
+    if(strlen(act + 1) == 0)
+        return LINEA_FALLADA;
+
+    strncpy(transferencia->descripcion_pais, act + 1, TAM_DESC);
+    transferencia->descripcion_pais[TAM_DESC] = '\0';
+
+    *act = '\0';
+    act = strrchr(registro, ';');
+
+    if(strlen(act + 1) == 0)
+        return LINEA_FALLADA;
+
+    strncpy(transferencia->codigo_pais, act + 1, TAM_COD);
+    transferencia->codigo_pais[TAM_COD] = '\0';
+
+    *act = '\0';
+    act = strrchr(registro, ';');
+
+    if(strlen(act + 1) == 0)
+        return LINEA_FALLADA;
+
+    sscanf(act + 1, "%d", &transferencia->trimestre);
+
+    *act = '\0';
+
+    if(strlen(registro) == 0)
+        return LINEA_FALLADA;
+
+    sscanf(registro, "%d", &transferencia->anio);
+
+    return TODO_OK;
 }
 
-void armaIntermedio(const char *registro, void * elemento)
+int armaIntermedio(const char *registro, void * elemento)
 {
     tIntermedio *inter = (tIntermedio *)elemento;
 
-    sscanf(registro,"%d;%d;%2[^;];%49[^;];%19[^;];%c;%f", &inter->anio, &inter->trimestre,
-            inter->codigo_pais, inter->descripcion_pais, inter->continente, &inter->operacion, &inter->monto);
+    char* act = strchr(registro, '\n');
+
+    if(!act)
+    {
+        return ERROR_LINEA_LARGA;
+    }
+
+    *act = '\0';
+    act = strrchr(registro, ';');
+
+    if(strlen(act + 1) == 0)
+        return LINEA_FALLADA;
+
+    sscanf(act + 1, "%f", &inter->monto);
+
+    *act = '\0';
+    act = strrchr(registro, ';');
+
+    if(strlen(act + 1) == 0)
+        return LINEA_FALLADA;
+
+    sscanf(act + 1, "%c", &inter->operacion);
+
+    *act = '\0';
+    act = strrchr(registro, ';');
+
+    if(strlen(act + 1) == 0)
+        return LINEA_FALLADA;
+
+    strncpy(inter->continente, act + 1, TAM_CONT);
+    inter->continente[TAM_CONT] = '\0';
+
+    *act = '\0';
+    act = strrchr(registro, ';');
+
+    if(strlen(act + 1) == 0)
+        return LINEA_FALLADA;
+
+    strncpy(inter->descripcion_pais, act + 1, TAM_DESC);
+    inter->descripcion_pais[TAM_DESC] = '\0';
+
+    *act = '\0';
+    act = strrchr(registro, ';');
+
+    if(strlen(act + 1) == 0)
+        return LINEA_FALLADA;
+
+    strncpy(inter->codigo_pais, act + 1, TAM_COD);
+    inter->codigo_pais[TAM_COD] = '\0';
+
+    *act = '\0';
+    act = strrchr(registro, ';');
+
+    if(strlen(act + 1) == 0)
+        return LINEA_FALLADA;
+
+    sscanf(act + 1, "%d", &inter->trimestre);
+
+    *act = '\0';
+
+    if(strlen(registro) == 0)
+        return LINEA_FALLADA;
+
+    sscanf(registro, "%d", &inter->anio);
+
+    return TODO_OK;
 }
 
-void armaContinentes(const char *registro, void * elemento)
+int armaContinentes(const char *registro, void * elemento)
 {
     tContinentes *continente = (tContinentes *)elemento;
 
-    sscanf(registro,"%2[^;];%49[^;];%19[^\r\n;]", continente->codigo_pais, continente->descripcion_pais,
-           continente->continente);
+    char* act = strchr(registro, '\n');
+
+    if(!act)
+    {
+        return ERROR_LINEA_LARGA;
+    }
+
+    *act = '\0';
+    act = strrchr(registro, ';');
+
+    if(strlen(act + 1) == 0)
+        return LINEA_FALLADA;
+
+    strncpy(continente->continente, act + 1, TAM_CONT);
+    continente->continente[TAM_CONT] = '\0';
+
+    *act = '\0';
+    act = strrchr(registro, ';');
+
+    if(strlen(act + 1) == 0)
+        return LINEA_FALLADA;
+
+    strncpy(continente->descripcion_pais, act + 1, TAM_DESC);
+    continente->descripcion_pais[TAM_DESC] = '\0';
+
+    *act = '\0';
+    act = strrchr(registro, ';');
+
+    if(strlen(registro) == 0)
+        return LINEA_FALLADA;
+
+    strncpy(continente->codigo_pais, registro, TAM_COD);
+    continente->codigo_pais[TAM_COD] = '\0';
+
+    return TODO_OK;
 }
 
 int compararCodigoPais(const void *a, const void *b)
@@ -164,15 +316,15 @@ int compararPromCredTrimPais(const void* a, const void* b)
 void printClasificacion(const void *e)
 {
     const tClasificacion* clasif = (tClasificacion*)e;
-    printf("%s - %d - %.2lf - %.2lf\n", clasif->continente, clasif->registros, clasif->total_credito,
+    printf("%-20s | %10d | %8.2lf | %8.2lf\n", clasif->continente, clasif->registros, clasif->total_credito,
            clasif->total_debito);
 }
 
 void printResulTrim(const void *e)
 {
     const tResulPromPais* promTrim = (tResulPromPais*)e;
-    printf("%-10s  %-25s  %3c  %8d  %15.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, 'C', promTrim->cantTrimCred, promTrim->promCredito);
-    printf("%-10s  %-25s  %3c  %8d  %15.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, 'D', promTrim->cantTrimDeb, promTrim->promDebito);
+    printf("%-10s | %-50s | %9c | %9d | %8.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, 'C', promTrim->cantTrimCred, promTrim->promCredito);
+    printf("%-10s | %-50s | %9c | %9d | %8.2f\n", promTrim->codigo_pais, promTrim->descripcion_pais, 'D', promTrim->cantTrimDeb, promTrim->promDebito);
 }
 
 int compararContinenteAnio(const void* a, const void* b)
@@ -243,7 +395,7 @@ int compararTransferenciasChar(const void* a, const void* b)
 void printResumen(const void *e)
 {
     const tTotalOperaciones* resumen = (tTotalOperaciones*)e;
-    printf("%-10s  %-30s  %-10d  %15.2f  %15.2f\n", resumen->codigoPais, resumen->descripcionPais,
+    printf("%-10s | %-50s | %10d | %13.2f | %12.2f\n", resumen->codigoPais, resumen->descripcionPais,
         resumen->cantidadRegistros, resumen->totalCreditos, resumen->totalDebitos);
 }
 
@@ -251,7 +403,7 @@ void printResulTrimCont(const void *e)
 {
     const tResulPromCont* resul = (tResulPromCont*)e;
 
-    printf("%4d | %-30s | %.2f | %.2f\n", resul->anio, resul->continente, resul->promTrimCred, resul->promTrimDeb);
+    printf("%-6d | %-50s | %9.2f | %8.2f\n", resul->anio, resul->continente, resul->promTrimCred, resul->promTrimDeb);
 }
 
 void printTotalesAnualesVariacion(const void *e)
@@ -272,7 +424,7 @@ int compararPaisNombre(const void* a, const void* b)
 {
     const tPersonales* p1 = (const tPersonales*) a;
     const tPersonales* p2 = (const tPersonales*) b;
-   
+
     return strcmp(p1->descripcion_pais, p2->descripcion_pais);
 }
 
@@ -280,7 +432,7 @@ void printPartCont(const void *e)
 {
     const tParticipacionContBin* part = (tParticipacionContBin*)e;
 
-    printf("%-20s | %.2f | %.2f", part->continente, part->porcPartCred, part->porcPartDeb);
+    printf("%-20s | %8.2f | %8.2f\n", part->continente, part->porcPartCred, part->porcPartDeb);
 }
 
 void verificarCodRet(int cod)
@@ -312,6 +464,14 @@ void verificarCodRet(int cod)
 
         case ACCESO_ARCH_FALLIDO:
             puts("Acceso fallido a archivo, reintente la ejecucion.");
+            break;
+
+        case ERROR_LINEA_LARGA:
+            puts("Error al leer el archivo por estar mal cargado, reintente ejecucion.");
+            break;
+
+        case LINEA_FALLADA:
+            puts("No se pudo leer una linea y se ha salteado.");
             break;
 
         default:

@@ -15,12 +15,17 @@ int ingresarEntero(char *mensaje)
 int ingresarEnteroRango(int minimo, int maximo, char *mensaje)
 {
     int numero;
+    int leido;
+
     printf("%s", mensaje);
-    scanf("%d", &numero);
-    while(numero < minimo || numero > maximo)
+    leido = scanf("%d", &numero);
+    limpiarBuffer();
+
+    while(leido != 1 || numero < minimo || numero > maximo)
     {
         printf("Error. Ingrese un valor entre %d y %d: ", minimo, maximo);
-        scanf("%d", &numero);
+        leido = scanf("%d", &numero);
+        limpiarBuffer();
     }
     return numero;
 }
@@ -59,7 +64,7 @@ float ingresarFloatPositivo(char *mensaje)
     return numero;
 }
 
-void limpiar_buffer(void)
+void limpiarBuffer(void)
 {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);

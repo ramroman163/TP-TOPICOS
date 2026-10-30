@@ -506,9 +506,11 @@ int rankingPaises(const Vector *transferencias)
     do
     {
         printf("Ingrese el tipo de operacion ('C' para Credito, 'D' para Debito): ");
-        scanf(" %c", &operacion);
+        scanf("%c", &operacion);
+        limpiarBuffer();
 
-        operacion = toupper(operacion);
+        operacion = (char)toupper(operacion);
+        
     } while (operacion != 'C' && operacion != 'D');
 
 
